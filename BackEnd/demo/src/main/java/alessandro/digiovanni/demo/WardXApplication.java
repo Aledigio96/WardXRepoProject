@@ -1,0 +1,14 @@
+package alessandro.digiovanni.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class WardXApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(WardXApplication.class, args);
+        System.out.printf("Hello");
+	}
+
+}
