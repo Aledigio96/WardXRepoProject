@@ -2,6 +2,7 @@ package alessandro.digiovanni.demo.configurations;
 
 import alessandro.digiovanni.demo.entities.User;
 import alessandro.digiovanni.demo.exceptions.UnauthorizedException;
+import alessandro.digiovanni.demo.services.UserService;
 import alessandro.digiovanni.demo.tools.JWTTools;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
