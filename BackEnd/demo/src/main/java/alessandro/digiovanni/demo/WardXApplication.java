@@ -8,7 +8,7 @@ public class WardXApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(WardXApplication.class, args);
-        System.out.printf("Hello");
+
 	}
 
 }
