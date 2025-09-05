@@ -1,26 +1,44 @@
-import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
+import { FaTshirt, FaSearch, FaShoppingCart, FaUserCircle } from "react-icons/fa";
 
 function TopBar() {
   return (
-    <Navbar expand="lg" bg="dark" data-bs-theme="dark">
-      <Container>
-        <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#link">Link</Nav.Link>
-            <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-            </NavDropdown>
+    <Navbar expand="lg" className="topbar-custom">
+      <div className="topbar-inner" style={{ display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between", position: "relative" }}>
+        <div className="topbar-left d-flex align-items-center">
+          <Navbar.Brand href="/" className="topbar-logo d-flex align-items-center">
+            <FaTshirt className="me-2" />
+            WardX
+          </Navbar.Brand>
+          <Nav className="topbar-nav d-flex align-items-center">
+            <Nav.Link href="#home" className="topbar-link">
+              Home
+            </Nav.Link>
+            <Nav.Link href="#social" className="topbar-link">
+              Social
+            </Nav.Link>
+            <Nav.Link href="#servizi" className="topbar-link">
+              Servizi
+            </Nav.Link>
           </Nav>
-        </Navbar.Collapse>
-      </Container>
+        </div>
+
+        <Form className="topbar-center">
+          <div className="topbar-search-group d-flex">
+            <FormControl type="search" placeholder="Cerca abbigliamento, brand..." className="topbar-search-input" aria-label="Search" />
+            <Button type="submit" className="topbar-search-btn d-flex align-items-center justify-content-center">
+              <FaSearch />
+            </Button>
+          </div>
+        </Form>
+
+        <div className="topbar-right d-flex align-items-center">
+          <FaShoppingCart className="topbar-icon" title="Carrello" />
+          <FaUserCircle className="topbar-icon" title="Login / Account" />
+        </div>
+      </div>
     </Navbar>
   );
 }
+
 export default TopBar;

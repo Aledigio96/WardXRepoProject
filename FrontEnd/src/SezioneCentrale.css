@@ -1,0 +1,32 @@
+.hero-streetwear {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 60px 0;
+  background-image: url("/urban-texture.png");
+  background-size: cover;
+  background-blend-mode: overlay;
+}
+
+.street-title {
+  font-family: "Anton", sans-serif;
+  font-size: 4rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.highlight {
+  color: #5bab86;
+}
+
+.btn-cta {
+  background-color: #5bab86;
+  border: none;
+  padding: 12px 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.btn-cta:hover {
+  background-color: #45936d;
+}

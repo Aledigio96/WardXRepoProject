@@ -1,12 +1,24 @@
 import { BrowserRouter } from "react-router-dom";
-import "./App.css";
+
 import TopBar from "./components/TopBar";
+
+import SezioneCentrale from "./components/SezioneCentrale";
+import "./App.css";
+import Footer from "./components/Footer";
+import SezioneSpiegativa from "./components/SezioneSpiegativa";
 
 function App() {
   return (
     <>
       <BrowserRouter>
-        <TopBar />
+        <div className="app-wrapper">
+          <TopBar />
+          <main className="main-content">
+            <SezioneCentrale />
+            <SezioneSpiegativa />
+          </main>
+          <Footer />
+        </div>
       </BrowserRouter>
     </>
   );
