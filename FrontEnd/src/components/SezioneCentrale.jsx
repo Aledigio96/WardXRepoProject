@@ -7,7 +7,7 @@ import { useState } from "react";
 function SezioneCentrale() {
   const [showModal, setShowModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedPerson, setSelectedPerson] = useState(""); // nuovo stato
+  const [selectedPerson, setSelectedPerson] = useState("");
 
   const categories = [
     { id: "tshirt", label: "T-SHIRT", icon: <FaMale color="#9b59b6" /> },
@@ -30,16 +30,14 @@ function SezioneCentrale() {
     { id: 3, titolo: "T-shirt grafica", descrizione: "Cotone 100%, usata poco", prezzo: "€15" },
   ];
 
-  // ✅ Modificato per salvare il personId
   const handleIconClick = (personId) => {
-    setSelectedPerson(personId); // salva la persona cliccata (uomo/donna/bambino)
-    setSelectedCategory(""); // reset della categoria
-    setShowModal(true); // mostra il modal
+    setSelectedPerson(personId);
+    setSelectedCategory("");
+    setShowModal(true);
   };
 
   const handleCategorySelect = (categoryId) => {
     setSelectedCategory(categoryId);
-    // In futuro potrai usare selectedPerson + categoryId per fetchare annunci
   };
 
   const handleCloseModal = () => {
@@ -50,7 +48,6 @@ function SezioneCentrale() {
 
   return (
     <>
-      {/* Titolo e bottoni fuori dal carosello */}
       <div className="carousel-title-wrapper text-center my-4">
         <h1 className="street-title">
           WARD<span className="highlight">X</span>
@@ -62,12 +59,10 @@ function SezioneCentrale() {
         </div>
       </div>
 
-      {/* Carosello full width */}
       <div className="fullwidth-carousel-wrapper">
         <CarouselPrincipal />
       </div>
 
-      {/* Icone Uomo, Donna, Bambino */}
       <Container className="mt-5">
         <Row className="text-center mb-5 justify-content-center">
           {peopleIcons.map(({ id, icon, label }) => (
@@ -78,7 +73,6 @@ function SezioneCentrale() {
           ))}
         </Row>
 
-        {/* Annunci */}
         <Row>
           <h2 className="text-center mb-4" style={{ color: "#9b59b6" }}>
             Ultimi Annunci
@@ -102,9 +96,12 @@ function SezioneCentrale() {
       {showModal && (
         <div className="modal-backdrop">
           <div className="modal-content-category">
-            <h4 className="mb-3">
-              Seleziona Categoria per: <span style={{ color: "#9b59b6" }}>{selectedPerson.toUpperCase()}</span>
-            </h4>
+            <h4 className="mb-3">Seleziona Categoria</h4>
+            {selectedPerson && (
+              <p>
+                Hai selezionato: <strong>{selectedPerson.toUpperCase()}</strong>
+              </p>
+            )}
             <div className="d-flex flex-wrap justify-content-center gap-3">
               {categories.map(({ id, label, icon }) => (
                 <Button key={id} variant={selectedCategory === id ? "warning" : "outline-secondary"} onClick={() => handleCategorySelect(id)}>
@@ -121,7 +118,6 @@ function SezioneCentrale() {
         </div>
       )}
 
-      {/* Stili Modal inline */}
       <style jsx>{`
         .modal-backdrop {
           position: fixed;
@@ -135,7 +131,6 @@ function SezioneCentrale() {
           justify-content: center;
           z-index: 1050;
         }
-
         .modal-content-category {
           background: white;
           padding: 2rem;

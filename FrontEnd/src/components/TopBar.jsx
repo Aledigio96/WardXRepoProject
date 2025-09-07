@@ -18,8 +18,8 @@ function TopBar() {
             <Link to="/social" className="nav-link topbar-link">
               Social
             </Link>
-            <Link to="/servizi" className="nav-link topbar-link">
-              Servizi
+            <Link to="/iscriviti/login" className="nav-link topbar-link">
+              Iscriviti/Login
             </Link>
           </Nav>
         </div>
