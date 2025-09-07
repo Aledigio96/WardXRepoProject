@@ -1,26 +1,25 @@
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import TopBar from "./components/TopBar";
-
-import SezioneCentrale from "./components/SezioneCentrale";
-import "./App.css";
 import Footer from "./components/Footer";
-import SezioneSpiegativa from "./components/SezioneSpiegativa";
+
+import Home from "./pages/Home";
+
+import "./App.css";
 
 function App() {
   return (
-    <>
-      <BrowserRouter>
-        <div className="app-wrapper">
-          <TopBar />
-          <main className="main-content">
-            <SezioneCentrale />
-            <SezioneSpiegativa />
-          </main>
-          <Footer />
-        </div>
-      </BrowserRouter>
-    </>
+    <BrowserRouter>
+      <div className="app-wrapper">
+        <TopBar />
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </BrowserRouter>
   );
 }
 

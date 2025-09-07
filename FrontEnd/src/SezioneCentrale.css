@@ -1,32 +1,46 @@
-.hero-streetwear {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  padding: 60px 0;
-  background-image: url("/urban-texture.png");
-  background-size: cover;
-  background-blend-mode: overlay;
+/* Carosello full width senza limiti */
+.fullwidth-carousel-wrapper {
+  width: 100vw;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Immagini dentro il carosello */
+.fullwidth-carousel-wrapper .carousel,
+.fullwidth-carousel-wrapper .carousel-item,
+.fullwidth-carousel-wrapper .carousel-inner,
+.fullwidth-carousel-wrapper img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Overlay testuale centrato */
+.carousel-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  color: white;
+  text-align: center;
 }
 
 .street-title {
-  font-family: "Anton", sans-serif;
   font-size: 4rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  font-weight: bold;
 }
 
 .highlight {
-  color: #5bab86;
+  color: #9b59b6;
 }
 
-.btn-cta {
-  background-color: #5bab86;
-  border: none;
-  padding: 12px 24px;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.btn-cta:hover {
-  background-color: #45936d;
+/* Evita margini extra globali */
+body,
+html {
+  margin: 0;
+  padding: 0;
 }

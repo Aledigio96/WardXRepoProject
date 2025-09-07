@@ -1,5 +1,6 @@
 import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
 import { FaTshirt, FaSearch, FaShoppingCart, FaUserCircle } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 function TopBar() {
   return (
@@ -11,15 +12,15 @@ function TopBar() {
             WardX
           </Navbar.Brand>
           <Nav className="topbar-nav d-flex align-items-center">
-            <Nav.Link href="#home" className="topbar-link">
+            <Link to="/" className="nav-link topbar-link">
               Home
-            </Nav.Link>
-            <Nav.Link href="#social" className="topbar-link">
+            </Link>
+            <Link to="/social" className="nav-link topbar-link">
               Social
-            </Nav.Link>
-            <Nav.Link href="#servizi" className="topbar-link">
+            </Link>
+            <Link to="/servizi" className="nav-link topbar-link">
               Servizi
-            </Nav.Link>
+            </Link>
           </Nav>
         </div>
 

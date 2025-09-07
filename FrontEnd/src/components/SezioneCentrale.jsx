@@ -1,64 +1,85 @@
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
-import { FaTshirt, FaShoePrints, FaUserTie } from "react-icons/fa";
-import { GiClothes, GiWatch } from "react-icons/gi";
-
+import { FaMale, FaFemale, FaChild } from "react-icons/fa";
 import CarouselPrincipal from "./CarouselPrincipal";
 import "../SezioneCentrale.css";
+import { useState } from "react";
 
 function SezioneCentrale() {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedPerson, setSelectedPerson] = useState(""); // nuovo stato
+
+  const categories = [
+    { id: "tshirt", label: "T-SHIRT", icon: <FaMale color="#9b59b6" /> },
+    { id: "giacche", label: "GIACCHE", icon: <FaFemale color="#9b59b6" /> },
+    { id: "pantaloni", label: "PANTALONI", icon: <FaChild color="#9b59b6" /> },
+    { id: "accessori", label: "ACCESSORI", icon: <FaMale color="#9b59b6" /> },
+    { id: "scarpe", label: "SCARPE", icon: <FaFemale color="#9b59b6" /> },
+    { id: "altro", label: "ALTRO", icon: <FaChild color="#9b59b6" /> },
+  ];
+
+  const peopleIcons = [
+    { id: "uomo", icon: <FaMale size={48} color="#9b59b6" />, label: "Uomo" },
+    { id: "donna", icon: <FaFemale size={48} color="#9b59b6" />, label: "Donna" },
+    { id: "bambino", icon: <FaChild size={48} color="#9b59b6" />, label: "Bambino" },
+  ];
+
   const annunci = [
     { id: 1, titolo: "Giacca vintage", descrizione: "Usata, ottime condizioni", prezzo: "€45" },
     { id: 2, titolo: "Sneakers limited", descrizione: "Taglia 42, quasi nuove", prezzo: "€80" },
     { id: 3, titolo: "T-shirt grafica", descrizione: "Cotone 100%, usata poco", prezzo: "€15" },
   ];
 
+  // ✅ Modificato per salvare il personId
+  const handleIconClick = (personId) => {
+    setSelectedPerson(personId); // salva la persona cliccata (uomo/donna/bambino)
+    setSelectedCategory(""); // reset della categoria
+    setShowModal(true); // mostra il modal
+  };
+
+  const handleCategorySelect = (categoryId) => {
+    setSelectedCategory(categoryId);
+    // In futuro potrai usare selectedPerson + categoryId per fetchare annunci
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedCategory("");
+    setSelectedPerson("");
+  };
+
   return (
-    <section className="hero-streetwear">
-      <Container>
-        <Row className="text-center mb-5 categorie-icone">
-          <Col xs={4} sm={2} className="d-flex flex-column align-items-center categoria-item">
-            <FaTshirt size={32} />
-            <small>T-Shirt</small>
-          </Col>
-          <Col xs={4} sm={2} className="d-flex flex-column align-items-center categoria-item">
-            <FaUserTie size={32} />
-            <small>Giacche</small>
-          </Col>
-          <Col xs={4} sm={2} className="d-flex flex-column align-items-center categoria-item">
-            <GiClothes size={32} />
-            <small>Pantaloni</small>
-          </Col>
-          <Col xs={4} sm={2} className="d-flex flex-column align-items-center categoria-item">
-            <GiWatch size={32} />
-            <small>Accessori</small>
-          </Col>
-          <Col xs={4} sm={2} className="d-flex flex-column align-items-center categoria-item">
-            <FaShoePrints size={32} />
-            <small>Scarpe</small>
-          </Col>
-          <Col xs={4} sm={2} className="d-flex flex-column align-items-center categoria-item">
-            <GiClothes size={32} />
-            <small>Altro</small>
-          </Col>
+    <>
+      {/* Titolo e bottoni fuori dal carosello */}
+      <div className="carousel-title-wrapper text-center my-4">
+        <h1 className="street-title">
+          WARD<span className="highlight">X</span>
+        </h1>
+        <p className="lead">Wear your vibes. Share with the community.</p>
+        <div className="d-flex flex-wrap gap-3 justify-content-center mt-4">
+          <Button className="lentebutton">Scopri ora</Button>
+          <Button variant="outline-secondary">Entra</Button>
+        </div>
+      </div>
+
+      {/* Carosello full width */}
+      <div className="fullwidth-carousel-wrapper">
+        <CarouselPrincipal />
+      </div>
+
+      {/* Icone Uomo, Donna, Bambino */}
+      <Container className="mt-5">
+        <Row className="text-center mb-5 justify-content-center">
+          {peopleIcons.map(({ id, icon, label }) => (
+            <Col key={id} xs={4} sm={2} className="d-flex flex-column align-items-center" onClick={() => handleIconClick(id)} style={{ cursor: "pointer" }}>
+              {icon}
+              <small style={{ color: "#9b59b6" }}>{label}</small>
+            </Col>
+          ))}
         </Row>
 
-        <Row className="align-items-center">
-          <Col md={6} className="text-center text-md-start">
-            <h1 className="street-title">
-              WARD<span className="highlight">X</span>
-            </h1>
-            <p className="lead">Wear your vibes. Share with the community.</p>
-            <div className="d-flex flex-wrap gap-3 justify-content-center mt-4">
-              <Button className="lentebutton">Scopri ora</Button>
-              <Button className="btn btn-outline-secondary">Entra</Button>
-            </div>
-          </Col>
-          <Col md={6}>
-            <CarouselPrincipal />
-          </Col>
-        </Row>
-
-        <Row className="mt-5">
+        {/* Annunci */}
+        <Row>
           <h2 className="text-center mb-4" style={{ color: "#9b59b6" }}>
             Ultimi Annunci
           </h2>
@@ -77,7 +98,54 @@ function SezioneCentrale() {
           ))}
         </Row>
       </Container>
-    </section>
+
+      {showModal && (
+        <div className="modal-backdrop">
+          <div className="modal-content-category">
+            <h4 className="mb-3">
+              Seleziona Categoria per: <span style={{ color: "#9b59b6" }}>{selectedPerson.toUpperCase()}</span>
+            </h4>
+            <div className="d-flex flex-wrap justify-content-center gap-3">
+              {categories.map(({ id, label, icon }) => (
+                <Button key={id} variant={selectedCategory === id ? "warning" : "outline-secondary"} onClick={() => handleCategorySelect(id)}>
+                  <span className="me-2">{icon}</span> {label}
+                </Button>
+              ))}
+            </div>
+            <div className="mt-4 text-center">
+              <Button variant="secondary" onClick={handleCloseModal}>
+                Chiudi
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Stili Modal inline */}
+      <style jsx>{`
+        .modal-backdrop {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1050;
+        }
+
+        .modal-content-category {
+          background: white;
+          padding: 2rem;
+          border-radius: 12px;
+          max-width: 500px;
+          width: 90%;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+      `}</style>
+    </>
   );
 }
 
