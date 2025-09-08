@@ -1,6 +1,7 @@
 package alessandro.digiovanni.demo.entities;
 
 
+import alessandro.digiovanni.demo.enums.CategoriPrincipale;
 import alessandro.digiovanni.demo.enums.Categoria;
 import alessandro.digiovanni.demo.enums.Condizioni;
 import jakarta.persistence.*;
@@ -21,6 +22,8 @@ public class Annuncio {
     private Condizioni condizioni;
     private Boolean isAvailable = true;
     @Enumerated(EnumType.STRING)
+    private CategoriPrincipale categoriaPrincipale;
+    @Enumerated(EnumType.STRING)
     private Categoria categoria;
     @ElementCollection
     private List<String> imageUrls;
@@ -31,13 +34,14 @@ public class Annuncio {
     public Annuncio() {
     }
 
-    public Annuncio(String titolo, String descrizione, Double prezzo, String taglia, Condizioni condizioni, Boolean isAvailable, Categoria categoria, List<String> imageUrls, User seller) {
+    public Annuncio(String titolo, String descrizione, Double prezzo, String taglia, Condizioni condizioni, Boolean isAvailable, CategoriPrincipale categoriaPrincipale, Categoria categoria, List<String> imageUrls, User seller) {
         this.titolo = titolo;
         this.descrizione = descrizione;
         this.prezzo = prezzo;
         this.taglia = taglia;
         this.condizioni = condizioni;
         this.isAvailable = isAvailable;
+        this.categoriaPrincipale = categoriaPrincipale;
         this.categoria = categoria;
         this.imageUrls = imageUrls;
         this.seller = seller;
@@ -94,6 +98,14 @@ public class Annuncio {
 
     public void setAvailable(Boolean available) {
         isAvailable = available;
+    }
+
+    public CategoriPrincipale getCategoriaPrincipale() {
+        return categoriaPrincipale;
+    }
+
+    public void setCategoriaPrincipale(CategoriPrincipale categoriaPrincipale) {
+        this.categoriaPrincipale = categoriaPrincipale;
     }
 
     public Categoria getCategoria() {

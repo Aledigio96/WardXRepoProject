@@ -28,6 +28,9 @@ public record AnnuncioDTO(
         @NotNull(message = "Lo stato di disponibilità è obbligatorio")
         Boolean isAvailable,
 
+        @NotBlank(message = "La categoria principale è obbligatoria")
+        String categoriaPrincipale,
+
         @NotBlank(message = "La categoria è obbligatoria")
         String categoria,
 

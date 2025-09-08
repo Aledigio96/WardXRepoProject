@@ -9,6 +9,7 @@ public record AnnuncioUpdateDTO(
         String taglia,
         String condizioni,
         Boolean isAvailable,
+        String categoriaPrincipale,
         String categoria,
         List<String> imageUrls
 ) {}
