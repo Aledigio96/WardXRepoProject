@@ -22,30 +22,40 @@ function LoginPage() {
   };
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const url = isLogin ? "http://localhost:3001/auth/login" : "http://localhost:3001/auth/register";
+
+    const body = isLogin
+      ? {
+          email: formData.email,
+          password: formData.password,
+        }
+      : {
+          name: formData.name,
+          surname: formData.surname,
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          provinciaSigla: formData.provinciaSigla,
+        };
+
     try {
-      const url = isLogin ? "/auth/login" : "/auth/register";
       const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(
-          isLogin
-            ? {
-                email: formData.email,
-                password: formData.password,
-              }
-            : formData
-        ),
+
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) {
@@ -55,7 +65,7 @@ function LoginPage() {
 
       const data = await response.json();
 
-      if (isLogin) {
+      if (isLogin && data.accessToken) {
         localStorage.setItem("token", data.accessToken);
       }
 
@@ -107,12 +117,12 @@ function LoginPage() {
 
           <Form.Group className="mb-3">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="email" placeholder="Inserisci email" name="email" value={formData.email} onChange={handleChange} required />
+            <Form.Control type="email" name="email" placeholder="Inserisci email" value={formData.email} onChange={handleChange} required />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" name="password" value={formData.password} onChange={handleChange} required />
+            <Form.Control type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
           </Form.Group>
 
           <Button variant="primary" type="submit" className="w-100">

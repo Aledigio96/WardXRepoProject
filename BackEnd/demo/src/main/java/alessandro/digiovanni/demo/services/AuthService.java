@@ -26,7 +26,7 @@ public class AuthService {
         if(bCrypt.matches(body.password(), found.getPassword())) {
             return jwtTools.createToken(found);
         } else {
-            throw new UnauthorisedException("Wrong credentials!");
+            throw new UnauthorisedException("Credenziali errate!");
         }
     }
 

@@ -18,8 +18,8 @@ function TopBar() {
             <Link to="/social" className="nav-link topbar-link">
               Social
             </Link>
-            <Link to="/iscriviti/login" className="nav-link topbar-link">
-              Iscriviti/Login
+            <Link to="/profilo" className="nav-link topbar-link">
+              Profilo
             </Link>
           </Nav>
         </div>
@@ -34,6 +34,9 @@ function TopBar() {
         </Form>
 
         <div className="topbar-right d-flex align-items-center">
+          <Link to="/iscriviti/login" className="nav-link topbar-link">
+            Iscriviti/Login
+          </Link>
           <FaShoppingCart className="topbar-icon" title="Carrello" />
           <FaUserCircle className="topbar-icon" title="Login / Account" />
         </div>

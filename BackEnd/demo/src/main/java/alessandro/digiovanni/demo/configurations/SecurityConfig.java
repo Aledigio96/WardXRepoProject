@@ -47,16 +47,28 @@ public class SecurityConfig {
     }
 
 
-@Bean
-    public CorsConfigurationSource corsConfigurationSource(){
-    CorsConfiguration configuration= new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList ("http://localhost:5173", "http://localhost:5173"));
-    configuration.setAllowedMethods(List.of("*"));
-    configuration.setAllowedHeaders(List.of("*"));
-    UrlBasedCorsConfigurationSource source= new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**",configuration);
-    return source;
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:5173"));
+
+
+        configuration.setAllowedMethods(List.of("*"));
+
+
+        configuration.setAllowedHeaders(List.of("*"));
+
+
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
 }
 
-}
+
 

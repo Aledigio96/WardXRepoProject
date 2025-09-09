@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import "./App.css";
 import Social from "./pages/Social";
 import LoginPage from "./pages/LoginPage";
+import Profilo from "./pages/Profilo";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/social" element={<Social />} />
             <Route path="/iscriviti/login" element={<LoginPage />} />
+            <Route path="/profilo" element={<Profilo />} />
           </Routes>
         </main>
         <Footer />

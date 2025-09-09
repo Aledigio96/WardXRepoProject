@@ -75,4 +75,8 @@ public class AnnuncioController {
             @RequestParam("url") String imageUrl) {
         return annuncioService.removeAnnuncioImage(id, user, imageUrl);
     }
+    @GetMapping("/user/{username}")
+    public List<AnnuncioDTO> getAnnunciBySellerUsername(@PathVariable String username) {
+        return annuncioService.findByUsername(username);
+    }
 }

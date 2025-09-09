@@ -204,4 +204,27 @@ public class AnnuncioService {
 
         return updatedImages;
     }
+    public List<AnnuncioDTO> findByUsername(String username) {
+        List<Annuncio> annunci = annuncioRepository.findBySellerUsername(username);
+
+        List<AnnuncioDTO> dtoList = new ArrayList<>();
+        for (Annuncio annuncio : annunci) {
+            AnnuncioDTO dto = new AnnuncioDTO(
+                    annuncio.getId(),
+                    annuncio.getTitolo(),
+                    annuncio.getDescrizione(),
+                    annuncio.getPrezzo(),
+                    annuncio.getTaglia(),
+                    annuncio.getCondizioni() != null ? annuncio.getCondizioni().name() : null,
+                    annuncio.getAvailable(),
+                    annuncio.getCategoriaPrincipale() != null ? annuncio.getCategoriaPrincipale().name() : null,
+                    annuncio.getCategoria() != null ? annuncio.getCategoria().name() : null,
+                    annuncio.getImageUrls(),
+                    annuncio.getSeller() != null ? annuncio.getSeller().getId() : null
+            );
+            dtoList.add(dto);
+        }
+        return dtoList;
+    }
+
 }
