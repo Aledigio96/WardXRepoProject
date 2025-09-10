@@ -11,8 +11,9 @@ function TopBar() {
             <FaTshirt className="me-2" />
             WardX
           </Navbar.Brand>
+          {/*{({isActive})} => isActive ? "nav-link active" : nav-link */}
           <Nav className="topbar-nav d-flex align-items-center">
-            <Link to="/" className="nav-link topbar-link">
+            <Link to="/" className="nav-link topbar-link ">
               Home
             </Link>
             <Link to="/social" className="nav-link topbar-link">

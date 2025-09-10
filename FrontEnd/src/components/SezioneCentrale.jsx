@@ -2,12 +2,13 @@ import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import { FaMale, FaFemale, FaChild } from "react-icons/fa";
 import CarouselPrincipal from "./CarouselPrincipal";
 import "../SezioneCentrale.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function SezioneCentrale() {
   const [showModal, setShowModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPerson, setSelectedPerson] = useState("");
+  const [annunci, setAnnunci] = useState([]);
 
   const categories = [
     { id: "tshirt", label: "T-SHIRT", icon: <FaMale color="#9b59b6" /> },
@@ -24,11 +25,22 @@ function SezioneCentrale() {
     { id: "bambino", icon: <FaChild size={48} color="#9b59b6" />, label: "Bambino" },
   ];
 
-  const annunci = [
-    { id: 1, titolo: "Giacca vintage", descrizione: "Usata, ottime condizioni", prezzo: "€45" },
-    { id: 2, titolo: "Sneakers limited", descrizione: "Taglia 42, quasi nuove", prezzo: "€80" },
-    { id: 3, titolo: "T-shirt grafica", descrizione: "Cotone 100%, usata poco", prezzo: "€15" },
-  ];
+  useEffect(() => {
+    fetch("http://localhost:3001/api/annunci")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Errore nel recupero degli annunci");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        const shuffled = data.sort(() => 0.5 - Math.random());
+        setAnnunci(shuffled.slice(0, 6));
+      })
+      .catch((err) => {
+        console.error("Errore durante la fetch:", err);
+      });
+  }, []);
 
   const handleIconClick = (personId) => {
     setSelectedPerson(personId);
@@ -77,15 +89,42 @@ function SezioneCentrale() {
           <h2 className="text-center mb-4" style={{ color: "#9b59b6" }}>
             Ultimi Annunci
           </h2>
-          {annunci.map(({ id, titolo, descrizione, prezzo }) => (
+          {annunci.map(({ id, titolo, descrizione, prezzo, taglia, condizioni, isAvailable, categoriaPrincipale, categoria, imageUrls }) => (
             <Col key={id} md={4} className="mb-4">
               <Card className="h-100 card-annuncio">
+                {imageUrls && imageUrls.length > 0 && (
+                  <Card.Img variant="top" src={imageUrls[0]} alt={titolo} style={{ objectFit: "cover", height: "200px" }} />
+                )}
+
                 <Card.Body>
-                  <Card.Title>{titolo}</Card.Title>
-                  <Card.Text>{descrizione}</Card.Text>
+                  <Card.Title className="mb-2" style={{ color: "#9b59b6" }}>
+                    {titolo}
+                  </Card.Title>
+
+                  <Card.Text className="mb-1">
+                    <strong>Categoria:</strong> {categoriaPrincipale} / {categoria}
+                  </Card.Text>
+
+                  <Card.Text className="mb-1">
+                    <strong>Taglia:</strong> {taglia}
+                  </Card.Text>
+
+                  <Card.Text className="mb-1">
+                    <strong>Condizioni:</strong> {condizioni}
+                  </Card.Text>
+
+                  <Card.Text className="mb-2">
+                    <strong>Disponibilità:</strong>{" "}
+                    <span style={{ color: isAvailable ? "green" : "red" }}>{isAvailable ? "Disponibile" : "Non disponibile"}</span>
+                  </Card.Text>
+
+                  <Card.Text className="mb-2" style={{ fontStyle: "italic" }}>
+                    {descrizione}
+                  </Card.Text>
                 </Card.Body>
+
                 <Card.Footer>
-                  <small className="text-muted">{prezzo}</small>
+                  <strong style={{ color: "#2c3e50" }}>{prezzo.toFixed(2)} €</strong>
                 </Card.Footer>
               </Card>
             </Col>
@@ -118,7 +157,7 @@ function SezioneCentrale() {
         </div>
       )}
 
-      <style jsx>{`
+      <style>{`
         .modal-backdrop {
           position: fixed;
           top: 0;
