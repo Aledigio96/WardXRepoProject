@@ -4,12 +4,13 @@ import alessandro.digiovanni.demo.entities.PostSocial;
 import alessandro.digiovanni.demo.entities.User;
 import alessandro.digiovanni.demo.payloads.PostSocialDTO;
 import alessandro.digiovanni.demo.payloads.PostSocialRespDTO;
+import alessandro.digiovanni.demo.payloads.UserPostSummary;
 import alessandro.digiovanni.demo.repositories.PostSocialRepository;
 import alessandro.digiovanni.demo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,17 +39,18 @@ public class PostSocialService {
         return toDTO(post);
     }
 
-    public PostSocialRespDTO create(PostSocialDTO dto) {
-        PostSocial post = new PostSocial();
-        post.setContent(dto.content());
-        post.setCreatedAt(LocalDateTime.now());
-        post.setImageUrls(dto.imageUrls());
 
-        User autore = userRepo.findById(dto.autoreId())
-                .orElseThrow(() -> new RuntimeException("Autore non trovato con id: " + dto.autoreId()));
+    public PostSocialRespDTO create(String content, String username) {
+        User autore = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        PostSocial post = new PostSocial();
+        post.setContent(content);
         post.setAutore(autore);
 
-        return toDTO(postRepo.save(post));
+        PostSocial savedPost = postRepo.save(post);
+
+        return toDTO(savedPost);
     }
 
     public PostSocialRespDTO update(Long id, PostSocialDTO dto) {
@@ -56,7 +58,6 @@ public class PostSocialService {
                 .orElseThrow(() -> new RuntimeException("Post non trovato con id: " + id));
 
         post.setContent(dto.content());
-        post.setImageUrls(dto.imageUrls());
 
         if (dto.autoreId() != null) {
             User autore = userRepo.findById(dto.autoreId())
@@ -64,7 +65,8 @@ public class PostSocialService {
             post.setAutore(autore);
         }
 
-        return toDTO(postRepo.save(post));
+        PostSocial updatedPost = postRepo.save(post);
+        return toDTO(updatedPost);
     }
 
     public void delete(Long id) {
@@ -84,13 +86,20 @@ public class PostSocialService {
         return resp;
     }
 
+
     private PostSocialRespDTO toDTO(PostSocial post) {
+        User autore = post.getAutore();
+        UserPostSummary autoreDto = new UserPostSummary(
+                autore.getId(),
+                autore.getUsername(),
+                autore.getAvatarUrl()
+        );
+
         return new PostSocialRespDTO(
                 post.getId(),
                 post.getContent(),
                 post.getCreatedAt(),
-                post.getImageUrls(),
-                post.getAutore().getId()
+                autoreDto
         );
     }
 }

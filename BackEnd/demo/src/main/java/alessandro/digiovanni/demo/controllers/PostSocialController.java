@@ -21,7 +21,7 @@ public class PostSocialController {
 
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public List<PostSocialRespDTO> getAll() {
         return postService.getAll();
     }
@@ -45,8 +45,8 @@ public class PostSocialController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public PostSocialRespDTO create(@Valid @RequestBody PostSocialDTO dto,
                                     @AuthenticationPrincipal UserDetails userDetails) {
-
-        return postService.create(dto);
+        String username = userDetails.getUsername();
+        return postService.create(dto.content(), username);
     }
 
 

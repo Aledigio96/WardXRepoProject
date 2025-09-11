@@ -18,8 +18,6 @@ public class PostSocial {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @ElementCollection
-    private List<String> imageUrls;
 
     @ManyToOne
     @JoinColumn(name = "autore_id")
@@ -31,10 +29,10 @@ public class PostSocial {
     public PostSocial() {
     }
 
-    public PostSocial(String content, LocalDateTime createdAt, List<String> imageUrls, User autore, List<Commento> commenti) {
+    public PostSocial(String content, LocalDateTime createdAt,  User autore, List<Commento> commenti) {
         this.content = content;
         this.createdAt = createdAt;
-        this.imageUrls = imageUrls;
+
         this.autore = autore;
         this.commenti = commenti;
     }
@@ -59,13 +57,6 @@ public class PostSocial {
         this.createdAt = createdAt;
     }
 
-    public List<String> getImageUrls() {
-        return imageUrls;
-    }
-
-    public void setImageUrls(List<String> imageUrls) {
-        this.imageUrls = imageUrls;
-    }
 
     public User getAutore() {
         return autore;

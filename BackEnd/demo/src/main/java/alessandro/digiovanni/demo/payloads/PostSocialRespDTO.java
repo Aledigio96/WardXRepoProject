@@ -7,6 +7,5 @@ public record PostSocialRespDTO(
         Long id,
         String content,
         LocalDateTime createdAt,
-        List<String> imageUrls,
-        Long autoreId
+        UserPostSummary autore
 ) {}
