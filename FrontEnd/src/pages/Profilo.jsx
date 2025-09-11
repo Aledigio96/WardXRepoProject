@@ -102,6 +102,10 @@ function Profilo() {
     setShowModal(false);
   };
 
+  const handleDeleteSuccess = (deletedId) => {
+    setPosts((prev) => prev.filter((post) => post.id !== deletedId));
+  };
+
   if (loadingUser || loadingPosts) {
     return (
       <Container className="mt-5 text-center">
@@ -135,7 +139,7 @@ function Profilo() {
       </Row>
 
       <Row className="mt-3">
-        <Col>{errorPosts ? <Alert variant="danger">{errorPosts}</Alert> : <UserPosts posts={posts} />}</Col>
+        <Col>{errorPosts ? <Alert variant="danger">{errorPosts}</Alert> : <UserPosts posts={posts} onDeleteSuccess={handleDeleteSuccess} />}</Col>
       </Row>
 
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
