@@ -3,6 +3,7 @@ import { FaMale, FaFemale, FaChild } from "react-icons/fa";
 import CarouselPrincipal from "./CarouselPrincipal";
 import "../SezioneCentrale.css";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 function SezioneCentrale() {
   const [showModal, setShowModal] = useState(false);
@@ -66,7 +67,9 @@ function SezioneCentrale() {
         </h1>
         <p className="lead">Wear your vibes. Share with the community.</p>
         <div className="d-flex flex-wrap gap-3 justify-content-center mt-4">
-          <Button className="lentebutton">Scopri ora</Button>
+          <Link to="/scopriora">
+            <Button className="lentebutton">Scopri ora</Button>
+          </Link>
           <Button variant="outline-secondary">Entra</Button>
         </div>
       </div>
