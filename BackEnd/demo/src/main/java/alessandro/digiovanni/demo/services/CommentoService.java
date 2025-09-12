@@ -32,12 +32,15 @@ public class CommentoService {
         List<CommentoRespDTO> responseList = new ArrayList<>();
 
         for (Commento commento : commenti) {
+            User autore = commento.getUser();
             CommentoRespDTO dto = new CommentoRespDTO(
                     commento.getId(),
                     commento.getTesto(),
                     commento.getCreatedAt(),
                     commento.getPost().getId(),
-                    commento.getUser().getId()
+                    autore.getId(),
+                    autore.getUsername(),
+                    autore.getAvatarUrl()
             );
             responseList.add(dto);
         }
@@ -49,12 +52,15 @@ public class CommentoService {
         Commento commento = commentoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Commento non trovato con id: " + id));
 
+        User autore = commento.getUser();
         return new CommentoRespDTO(
                 commento.getId(),
                 commento.getTesto(),
                 commento.getCreatedAt(),
                 commento.getPost().getId(),
-                commento.getUser().getId()
+                autore.getId(),
+                autore.getUsername(),
+                autore.getAvatarUrl()
         );
     }
 
@@ -78,7 +84,9 @@ public class CommentoService {
                 saved.getTesto(),
                 saved.getCreatedAt(),
                 saved.getPost().getId(),
-                saved.getUser().getId()
+                user.getId(),
+                user.getUsername(),
+                user.getAvatarUrl()
         );
     }
 
@@ -94,8 +102,10 @@ public class CommentoService {
             commento.setPost(post);
         }
 
+        User user = commento.getUser(); // Default: utente corrente
+
         if (dto.userId() != null) {
-            User user = userRepository.findById(dto.userId())
+            user = userRepository.findById(dto.userId())
                     .orElseThrow(() -> new RuntimeException("User non trovato con id: " + dto.userId()));
             commento.setUser(user);
         }
@@ -107,7 +117,9 @@ public class CommentoService {
                 updated.getTesto(),
                 updated.getCreatedAt(),
                 updated.getPost().getId(),
-                updated.getUser().getId()
+                user.getId(),
+                user.getUsername(),
+                user.getAvatarUrl()
         );
     }
 
@@ -123,29 +135,36 @@ public class CommentoService {
         List<CommentoRespDTO> responseList = new ArrayList<>();
 
         for (Commento commento : commenti) {
+            User autore = commento.getUser();
             CommentoRespDTO dto = new CommentoRespDTO(
                     commento.getId(),
                     commento.getTesto(),
                     commento.getCreatedAt(),
                     commento.getPost().getId(),
-                    commento.getUser().getId()
+                    autore.getId(),
+                    autore.getUsername(),
+                    autore.getAvatarUrl()
             );
             responseList.add(dto);
         }
 
         return responseList;
     }
+
     public List<CommentoRespDTO> getCommentiByPostId(Long postId) {
         List<Commento> commenti = commentoRepository.findByPostId(postId);
         List<CommentoRespDTO> responseList = new ArrayList<>();
 
         for (Commento commento : commenti) {
+            User autore = commento.getUser();
             CommentoRespDTO dto = new CommentoRespDTO(
                     commento.getId(),
                     commento.getTesto(),
                     commento.getCreatedAt(),
                     commento.getPost().getId(),
-                    commento.getUser().getId()
+                    autore.getId(),
+                    autore.getUsername(),
+                    autore.getAvatarUrl()
             );
             responseList.add(dto);
         }

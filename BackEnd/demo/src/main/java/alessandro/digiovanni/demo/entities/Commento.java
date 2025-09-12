@@ -5,6 +5,12 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "commenti")
 public class Commento {
@@ -13,22 +19,28 @@ public class Commento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 500)
     private String testo;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
+    @JsonIgnoreProperties({"commenti", "autore"}) // evita loop
     private PostSocial post;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({
+            "password", "email", "roles", "enabled",
+            "commenti", "posts", "createdAt"
+    }) // includi solo ciò che ti serve (username, avatarUrl)
     private User user;
 
+    // Costruttore vuoto obbligatorio per JPA
     public Commento() {
     }
 
+    // Costruttore utile per creare nuovi commenti
     public Commento(String testo, LocalDateTime createdAt, PostSocial post, User user) {
         this.testo = testo;
         this.createdAt = createdAt;
@@ -36,6 +48,7 @@ public class Commento {
         this.user = user;
     }
 
+    // Getters e setters
     public Long getId() {
         return id;
     }

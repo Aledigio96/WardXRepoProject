@@ -29,6 +29,29 @@ function LoginPage() {
     }));
   };
 
+  const fetchUserProfile = async (token) => {
+    try {
+      const response = await fetch("http://localhost:3001/api/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Errore nel recupero del profilo");
+      }
+
+      const userData = await response.json();
+
+      // Salvo i dati utente (o solo l'id) in localStorage o stato globale
+      localStorage.setItem("user", JSON.stringify(userData));
+      return userData;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -54,7 +77,6 @@ function LoginPage() {
         headers: {
           "Content-Type": "application/json",
         },
-
         body: JSON.stringify(body),
       });
 
@@ -67,6 +89,9 @@ function LoginPage() {
 
       if (isLogin && data.accessToken) {
         localStorage.setItem("token", data.accessToken);
+
+        // Ora recupero il profilo utente col token
+        await fetchUserProfile(data.accessToken);
       }
 
       setShow(false);

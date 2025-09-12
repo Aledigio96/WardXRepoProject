@@ -7,6 +7,8 @@ public record CommentoRespDTO(
         String testo,
         LocalDateTime createdAt,
         Long postId,
-        Long userId
+        Long userId,
+        String username,
+        String avatarUrl
 ) {
 }
