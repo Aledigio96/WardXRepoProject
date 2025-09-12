@@ -70,7 +70,9 @@ function SezioneCentrale() {
           <Link to="/scopriora">
             <Button className="lentebutton">Scopri ora</Button>
           </Link>
-          <Button variant="outline-secondary">Entra</Button>
+          <Link to="/iscriviti/login">
+            <Button variant="outline-secondary">Entra</Button>
+          </Link>
         </div>
       </div>
 
