@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { FaSearch, FaTshirt, FaShoppingCart, FaUserCircle } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { FaTshirt, FaSearch, FaShoppingCart, FaUserCircle } from "react-icons/fa";
 
 function TopBar() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+  const isLoggedIn = !!token;
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -18,7 +20,15 @@ function TopBar() {
 
   return (
     <Navbar expand="lg" className="topbar-custom">
-      <div className="topbar-inner" style={{ display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between" }}>
+      <div
+        className="topbar-inner"
+        style={{
+          display: "flex",
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <div className="topbar-left d-flex align-items-center">
           <Navbar.Brand href="/" className="topbar-logo d-flex align-items-center">
             <FaTshirt className="me-2" />
@@ -31,9 +41,12 @@ function TopBar() {
             <Link to="/social" className="nav-link topbar-link">
               Social
             </Link>
-            <Link to="/profilo" className="nav-link topbar-link">
-              Profilo
-            </Link>
+
+            {isLoggedIn && (
+              <Link to="/profilo" className="nav-link topbar-link">
+                Profilo
+              </Link>
+            )}
           </Nav>
         </div>
 
@@ -54,9 +67,12 @@ function TopBar() {
         </Form>
 
         <div className="topbar-right d-flex align-items-center">
-          <Link to="/iscriviti/login" className="nav-link topbar-link">
-            Iscriviti/Login
-          </Link>
+          {!isLoggedIn && (
+            <Link to="/iscriviti/login" className="nav-link topbar-link">
+              Iscriviti/Login
+            </Link>
+          )}
+
           <FaShoppingCart className="topbar-icon" title="Carrello" />
           <FaUserCircle className="topbar-icon" title="Login / Account" />
         </div>
