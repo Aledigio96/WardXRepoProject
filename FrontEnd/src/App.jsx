@@ -11,6 +11,7 @@ import LoginPage from "./pages/LoginPage";
 import Profilo from "./pages/Profilo";
 import ScopriOra from "./pages/ScopriOra";
 import RisultatiRicerca from "./pages/RicercaRisultati";
+import ProfiloPubblico from "./pages/ProfiloPubblico";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/profilo" element={<Profilo />} />
             <Route path="/scopriora" element={<ScopriOra />} />
             <Route path="/risultati" element={<RisultatiRicerca />} />
+            <Route path="/utente/:username" element={<ProfiloPubblico />} />
           </Routes>
         </main>
         <Footer />

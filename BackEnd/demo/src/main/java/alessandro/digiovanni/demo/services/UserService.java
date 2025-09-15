@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -42,6 +43,9 @@ public class UserService {
     }
     public Page<User> findUsersByUsername(String username, Pageable pageable) {
         return userRepository.findByUsernameContainingIgnoreCase(username, pageable);
+    }
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
     public Page<User> findAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable);

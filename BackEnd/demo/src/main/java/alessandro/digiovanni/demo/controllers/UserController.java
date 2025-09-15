@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -158,4 +159,21 @@ public class UserController {
                 updatedUser.getCreatedAt()
         );
     }
-}
+    @GetMapping("/{username}")
+    public UserResponseDTO getUserByUsername(@PathVariable String username) {
+        User user = userService.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Utente non trovato con username: " + username));
+
+        return new UserResponseDTO(
+                user.getId(),
+                user.getName(),
+                user.getSurname(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getBio(),
+                user.getAvatarUrl(),
+                user.getRole().name(),
+                user.getProvincia() != null ? user.getProvincia().getSigla() : null,
+                user.getCreatedAt()
+        );
+    }}

@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { Container, Row, Col, Form, Button, Card, Image } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Container, Row, Col, Card, Form, Button, Image } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 function Social() {
@@ -53,12 +54,10 @@ function Social() {
         });
 
         const commentsResults = await Promise.all(commentsPromises);
-
         const commentsMap = {};
         commentsResults.forEach(({ postId, comments }) => {
           commentsMap[postId] = comments;
         });
-
         setCommentsByPost(commentsMap);
       } catch (err) {
         console.error(err);
@@ -95,17 +94,11 @@ function Social() {
   const handleAddComment = async (postId) => {
     const testo = newComments[postId];
     if (!testo || testo.trim() === "") return;
-
     if (!userId) {
       alert("Devi essere loggato per commentare");
       return;
     }
-
-    const payload = {
-      testo,
-      postId,
-      userId,
-    };
+    const payload = { testo, postId, userId };
 
     try {
       const res = await fetch("http://localhost:3001/api/commenti", {
@@ -175,7 +168,6 @@ function Social() {
     <Container fluid className="my-5">
       <Row className="justify-content-center">
         <Col md={8}>
-          {/* FORM PER NUOVO POST */}
           <Card className="mb-4 shadow-sm" style={{ backgroundColor: "rgba(44, 38, 44, 0.1)" }}>
             <Card.Body>
               <Form onSubmit={handleSubmit}>
@@ -197,39 +189,46 @@ function Social() {
             </Card.Body>
           </Card>
 
-          {/* LISTA POST */}
-          {posts.map((post) => {
-            return (
-              <Card key={post.id} className="mb-3" style={{ backgroundColor: "rgba(44, 38, 44, 0.1)" }}>
-                <Card.Body>
-                  <div className="d-flex justify-content-between align-items-start">
-                    <div className="d-flex">
+          {posts.map((post) => (
+            <Card key={post.id} className="mb-3" style={{ backgroundColor: "rgba(44, 38, 44, 0.1)" }}>
+              <Card.Body>
+                <div className="d-flex justify-content-between align-items-start">
+                  <div className="d-flex">
+                    <Link to={`/utente/${post.autore?.username}`} className="me-3">
                       <Image
                         src={post.autore?.avatarUrl || "/default-avatar.png"}
                         roundedCircle
                         width={50}
                         height={50}
-                        className="me-3"
                         alt={post.autore?.username || "Utente"}
+                        style={{ cursor: "pointer" }}
                       />
-                      <div>
-                        <Card.Title>{post.autore?.username || "Utente"}</Card.Title>
-                        <Card.Text>{post.content}</Card.Text>
-                        <small className="text-muted">{new Date(post.createdAt).toLocaleString()}</small>
-                      </div>
+                    </Link>
+
+                    <div>
+                      <Card.Title>
+                        <Link to={`/utente/${post.autore?.username}`} style={{ textDecoration: "none", color: "inherit", cursor: "pointer" }}>
+                          {post.autore?.username || "Utente"}
+                        </Link>
+                      </Card.Title>
+                      <Card.Text>{post.content}</Card.Text>
+                      <small className="text-muted">{new Date(post.createdAt).toLocaleString()}</small>
                     </div>
-                    {post.autore?.id != null && userId != null && post.autore.id === userId && (
-                      <Button variant="danger" size="sm" onClick={() => handleDeletePost(post.id)}>
-                        Elimina Post
-                      </Button>
-                    )}
                   </div>
 
-                  <div className="mt-3">
-                    {(commentsByPost[post.id] || []).map((comment) => (
-                      <Card key={comment.id} className="mb-2" style={{ backgroundColor: "rgba(128, 0, 128, 0.05)" }}>
-                        <Card.Body className="d-flex justify-content-between align-items-start">
-                          <div className="d-flex">
+                  {post.autore?.id != null && userId != null && post.autore.id === userId && (
+                    <Button variant="danger" size="sm" onClick={() => handleDeletePost(post.id)}>
+                      Elimina Post
+                    </Button>
+                  )}
+                </div>
+
+                <div className="mt-3">
+                  {(commentsByPost[post.id] || []).map((comment) => (
+                    <Card key={comment.id} className="mb-2" style={{ backgroundColor: "rgba(128, 0, 128, 0.05)" }}>
+                      <Card.Body className="d-flex justify-content-between align-items-start">
+                        <div className="d-flex">
+                          <Link to={`/utente/${comment.username}`}>
                             <Image
                               src={comment.avatarUrl || "/default-avatar.png"}
                               roundedCircle
@@ -237,52 +236,57 @@ function Social() {
                               height={40}
                               className="me-2"
                               alt={comment.username || "Utente"}
+                              style={{ cursor: "pointer" }}
                             />
-                            <div>
-                              <strong>{comment.username || "Utente"}</strong>
-                              <p className="mb-1">{comment.testo}</p>
-                              <small className="text-muted">{new Date(comment.createdAt).toLocaleString()}</small>
-                            </div>
+                          </Link>
+                          <div>
+                            <strong>
+                              <Link to={`/utente/${comment.username}`} style={{ textDecoration: "none", color: "inherit", cursor: "pointer" }}>
+                                {comment.username || "Utente"}
+                              </Link>
+                            </strong>
+                            <p className="mb-1">{comment.testo}</p>
+                            <small className="text-muted">{new Date(comment.createdAt).toLocaleString()}</small>
                           </div>
-                          {comment.userId != null && userId != null && comment.userId === userId && (
-                            <Button variant="outline-danger" size="sm" onClick={() => handleDeleteComment(comment.id, post.id)}>
-                              Elimina Commento
-                            </Button>
-                          )}
-                        </Card.Body>
-                      </Card>
-                    ))}
-                  </div>
+                        </div>
+                        {comment.userId != null && userId != null && comment.userId === userId && (
+                          <Button variant="outline-danger" size="sm" onClick={() => handleDeleteComment(comment.id, post.id)}>
+                            Elimina Commento
+                          </Button>
+                        )}
+                      </Card.Body>
+                    </Card>
+                  ))}
+                </div>
 
-                  {userId != null && (
-                    <Form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        handleAddComment(post.id);
-                      }}
-                    >
-                      <Form.Group controlId={`newComment-${post.id}`}>
-                        <Form.Control
-                          type="text"
-                          placeholder="Scrivi un commento..."
-                          value={newComments[post.id] || ""}
-                          onChange={(e) =>
-                            setNewComments((prev) => ({
-                              ...prev,
-                              [post.id]: e.target.value,
-                            }))
-                          }
-                        />
-                      </Form.Group>
-                      <Button type="submit" variant="primary" size="sm" className="mt-2" disabled={!newComments[post.id]?.trim()}>
-                        Commenta
-                      </Button>
-                    </Form>
-                  )}
-                </Card.Body>
-              </Card>
-            );
-          })}
+                {userId != null && (
+                  <Form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleAddComment(post.id);
+                    }}
+                  >
+                    <Form.Group controlId={`newComment-${post.id}`}>
+                      <Form.Control
+                        type="text"
+                        placeholder="Scrivi un commento..."
+                        value={newComments[post.id] || ""}
+                        onChange={(e) =>
+                          setNewComments((prev) => ({
+                            ...prev,
+                            [post.id]: e.target.value,
+                          }))
+                        }
+                      />
+                    </Form.Group>
+                    <Button type="submit" variant="primary" size="sm" className="mt-2" disabled={!newComments[post.id]?.trim()}>
+                      Commenta
+                    </Button>
+                  </Form>
+                )}
+              </Card.Body>
+            </Card>
+          ))}
         </Col>
 
         <Col md={4}>

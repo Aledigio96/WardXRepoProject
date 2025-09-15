@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Image, Spinner, Button } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
+import { Container, Row, Col, Card, Image, Spinner } from "react-bootstrap";
+import { useLocation, Link } from "react-router-dom";
 
 function RisultatiRicerca() {
   const location = useLocation();
@@ -12,34 +12,22 @@ function RisultatiRicerca() {
   useEffect(() => {
     async function fetchRisultati() {
       setLoading(true);
-      console.log("Inizio la ricerca con la query:", query);
-
       try {
         const res = await fetch(`http://localhost:3001/api/search?query=${encodeURIComponent(query)}`);
-        console.log("Risposta ricevuta:", res.status);
-
-        if (!res.ok) {
-          console.error("Errore nella ricerca: Risposta non OK:", res.status);
-          throw new Error("Errore nella ricerca");
-        }
-
+        if (!res.ok) throw new Error("Errore nella ricerca");
         const data = await res.json();
-        console.log("Dati ricevuti dalla risposta:", data);
-
         setAnnunci(data.annunci || []);
         setUtenti(data.utenti || []);
       } catch (err) {
-        console.error("Errore nella fetch:", err);
+        console.error(err);
       } finally {
         setLoading(false);
-        console.log("Caricamento completato");
       }
     }
 
     if (query.trim() !== "") {
       fetchRisultati();
     } else {
-      console.log("La query è vuota o solo spazi bianchi.");
       setLoading(false);
     }
   }, [query]);
@@ -125,9 +113,9 @@ function RisultatiRicerca() {
                         {utente.name} {utente.surname}
                       </small>
                       <div className="mt-2">
-                        <Button variant="link" href={`/profilo/${utente.id}`}>
+                        <Link to={`/utente/${utente.username}`} className="btn btn-link p-0">
                           Vai al profilo
-                        </Button>
+                        </Link>
                       </div>
                     </div>
                   </Card>

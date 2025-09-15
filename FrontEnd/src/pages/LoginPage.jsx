@@ -31,7 +31,7 @@ function LoginPage() {
 
   const fetchUserProfile = async (token) => {
     try {
-      const response = await fetch("http://localhost:3001/api/profile", {
+      const response = await fetch("http://localhost:3001/api/users/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -43,7 +43,6 @@ function LoginPage() {
 
       const userData = await response.json();
 
-      // Salvo i dati utente (o solo l'id) in localStorage o stato globale
       localStorage.setItem("user", JSON.stringify(userData));
       return userData;
     } catch (error) {
@@ -90,7 +89,6 @@ function LoginPage() {
       if (isLogin && data.accessToken) {
         localStorage.setItem("token", data.accessToken);
 
-        // Ora recupero il profilo utente col token
         await fetchUserProfile(data.accessToken);
       }
 
