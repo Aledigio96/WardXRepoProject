@@ -1,20 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaTshirt, FaSearch, FaShoppingCart, FaUserCircle } from "react-icons/fa";
 
 function TopBar() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const token = localStorage.getItem("token");
   const isLoggedIn = !!token;
+
+  useEffect(() => {
+    // Resetta la barra di ricerca ad ogni cambio pagina
+    setSearchQuery("");
+  }, [location.pathname]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     const trimmedQuery = searchQuery.trim();
     if (trimmedQuery.length > 0) {
       navigate(`/risultati?query=${encodeURIComponent(trimmedQuery)}`);
+      setSearchQuery(""); // Resetta la barra anche dopo la ricerca
     }
   };
 
