@@ -4,7 +4,7 @@ import { Row, Col, Card, Button } from "react-bootstrap";
 function UserPosts({ posts, onDeleteSuccess }) {
   const [loadingId, setLoadingId] = useState(null);
 
-  const token = localStorage.getItem("token"); // 👈 Assicurati che il token sia salvato dopo il login
+  const token = localStorage.getItem("token");
 
   const handleDelete = async (id) => {
     if (!token) {
@@ -16,13 +16,13 @@ function UserPosts({ posts, onDeleteSuccess }) {
     if (!conferma) return;
 
     try {
-      setLoadingId(id); // ⏳ disabilita solo il bottone dell'annuncio corrente
+      setLoadingId(id);
 
       const response = await fetch(`http://localhost:3001/api/annunci/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // ✅ TOKEN JWT
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -43,8 +43,7 @@ function UserPosts({ posts, onDeleteSuccess }) {
   };
 
   const handleEdit = (id) => {
-    alert(`TODO: Modifica annuncio con ID: ${id}`);
-    // Qui puoi redirectare a una pagina /modifica/:id oppure aprire un modal
+    alert(`TODO: creare funzionalità di modifica per l'annuncio con ID: ${id}`);
   };
 
   if (!posts || posts.length === 0) return <p>Nessun annuncio pubblicato.</p>;
