@@ -19,8 +19,6 @@ function Social() {
         const id = decoded.sub || decoded.id || decoded.userId;
         const idNum = id != null ? Number(id) : null;
         setUserId(idNum);
-        console.log("Decoded JWT:", decoded);
-        console.log("User ID dal token (numero):", idNum);
       } catch (error) {
         console.error("Errore nella decodifica del token:", error);
       }
@@ -38,7 +36,6 @@ function Social() {
         });
         if (!resPosts.ok) throw new Error("Errore nel fetch dei post");
         const dataPosts = await resPosts.json();
-        console.log("Posts fetched:", dataPosts);
         setPosts(dataPosts);
 
         const commentsPromises = dataPosts.map(async (post) => {
@@ -98,6 +95,7 @@ function Social() {
       alert("Devi essere loggato per commentare");
       return;
     }
+
     const payload = { testo, postId, userId };
 
     try {
@@ -168,27 +166,37 @@ function Social() {
     <Container fluid className="my-5">
       <Row className="justify-content-center">
         <Col md={8}>
+          {/* AREA POST */}
           <Card className="mb-4 shadow-sm" style={{ backgroundColor: "rgba(44, 38, 44, 0.1)" }}>
             <Card.Body>
-              <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="newPost">
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    placeholder="Condividi qualcosa con la community..."
-                    value={newPost}
-                    onChange={(e) => setNewPost(e.target.value)}
-                  />
-                </Form.Group>
-                <div className="text-end mt-2">
-                  <Button variant="primary" type="submit" disabled={newPost.trim() === ""}>
-                    Pubblica
-                  </Button>
+              {userId ? (
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group controlId="newPost">
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      placeholder="Condividi qualcosa con la community..."
+                      value={newPost}
+                      onChange={(e) => setNewPost(e.target.value)}
+                    />
+                  </Form.Group>
+                  <div className="text-end mt-2">
+                    <Button variant="primary" type="submit" disabled={newPost.trim() === ""}>
+                      Pubblica
+                    </Button>
+                  </div>
+                </Form>
+              ) : (
+                <div className="text-center">
+                  <p>
+                    Per pubblicare un post devi <Link to="/iscriviti/login">accedere</Link> o <Link to="/iscriviti/login">registrarti</Link>.
+                  </p>
                 </div>
-              </Form>
+              )}
             </Card.Body>
           </Card>
 
+          {/* POST + COMMENTI */}
           {posts.map((post) => (
             <Card key={post.id} className="mb-3" style={{ backgroundColor: "rgba(44, 38, 44, 0.1)" }}>
               <Card.Body>
@@ -207,7 +215,7 @@ function Social() {
 
                     <div>
                       <Card.Title>
-                        <Link to={`/utente/${post.autore?.username}`} style={{ textDecoration: "none", color: "inherit", cursor: "pointer" }}>
+                        <Link to={`/utente/${post.autore?.username}`} style={{ textDecoration: "none", color: "inherit" }}>
                           {post.autore?.username || "Utente"}
                         </Link>
                       </Card.Title>
@@ -216,13 +224,14 @@ function Social() {
                     </div>
                   </div>
 
-                  {post.autore?.id != null && userId != null && post.autore.id === userId && (
+                  {post.autore?.id === userId && (
                     <Button variant="danger" size="sm" onClick={() => handleDeletePost(post.id)}>
                       Elimina Post
                     </Button>
                   )}
                 </div>
 
+                {/* COMMENTI */}
                 <div className="mt-3">
                   {(commentsByPost[post.id] || []).map((comment) => (
                     <Card key={comment.id} className="mb-2" style={{ backgroundColor: "rgba(128, 0, 128, 0.05)" }}>
@@ -241,7 +250,7 @@ function Social() {
                           </Link>
                           <div>
                             <strong>
-                              <Link to={`/utente/${comment.username}`} style={{ textDecoration: "none", color: "inherit", cursor: "pointer" }}>
+                              <Link to={`/utente/${comment.username}`} style={{ textDecoration: "none", color: "inherit" }}>
                                 {comment.username || "Utente"}
                               </Link>
                             </strong>
@@ -249,7 +258,7 @@ function Social() {
                             <small className="text-muted">{new Date(comment.createdAt).toLocaleString()}</small>
                           </div>
                         </div>
-                        {comment.userId != null && userId != null && comment.userId === userId && (
+                        {comment.userId === userId && (
                           <Button variant="outline-danger" size="sm" onClick={() => handleDeleteComment(comment.id, post.id)}>
                             Elimina Commento
                           </Button>
@@ -259,7 +268,8 @@ function Social() {
                   ))}
                 </div>
 
-                {userId != null && (
+                {/* AGGIUNGI COMMENTO */}
+                {userId && (
                   <Form
                     onSubmit={(e) => {
                       e.preventDefault();
@@ -289,6 +299,7 @@ function Social() {
           ))}
         </Col>
 
+        {/* PROFILI CONSIGLIATI */}
         <Col md={4}>
           <Card className="mb-3 shadow-sm">
             <Card.Body>

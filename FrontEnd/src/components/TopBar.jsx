@@ -12,7 +12,6 @@ function TopBar() {
   const isLoggedIn = !!token;
 
   useEffect(() => {
-    // Resetta la barra di ricerca ad ogni cambio pagina
     setSearchQuery("");
   }, [location.pathname]);
 
@@ -21,7 +20,7 @@ function TopBar() {
     const trimmedQuery = searchQuery.trim();
     if (trimmedQuery.length > 0) {
       navigate(`/risultati?query=${encodeURIComponent(trimmedQuery)}`);
-      setSearchQuery(""); // Resetta la barra anche dopo la ricerca
+      setSearchQuery("");
     }
   };
 
