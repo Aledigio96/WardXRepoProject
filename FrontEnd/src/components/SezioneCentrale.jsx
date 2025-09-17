@@ -94,12 +94,10 @@ function SezioneCentrale() {
           <h2 className="text-center mb-4" style={{ color: "#9b59b6" }}>
             Ultimi Annunci
           </h2>
-          {annunci.map(({ id, titolo, descrizione, prezzo, taglia, condizioni, isAvailable, categoriaPrincipale, categoria, imageUrls }) => (
+          {annunci.map(({ id, titolo, descrizione, prezzo, taglia, condizioni, isAvailable, categoriaPrincipale, categoria, image }) => (
             <Col key={id} md={4} className="mb-4">
               <Card className="h-100 card-annuncio">
-                {imageUrls && imageUrls.length > 0 && (
-                  <Card.Img variant="top" src={imageUrls[0]} alt={titolo} style={{ objectFit: "cover", height: "200px" }} />
-                )}
+                <Card.Img variant="top" src={image || "/default-image.jpg"} alt={titolo} style={{ objectFit: "cover", height: "200px", width: "100%" }} />
 
                 <Card.Body>
                   <Card.Title className="mb-2" style={{ color: "#9b59b6" }}>

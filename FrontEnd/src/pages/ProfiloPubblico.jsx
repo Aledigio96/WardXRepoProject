@@ -76,9 +76,9 @@ function ProfiloPubblico() {
           {annunci.length === 0 ? (
             <p>Nessun annuncio pubblicato.</p>
           ) : (
-            annunci.map(({ id, titolo, categoriaPrincipale, categoria, taglia, condizioni, isAvailable, descrizione, prezzo, createdAt, imageUrls }) => (
+            annunci.map(({ id, titolo, categoriaPrincipale, categoria, taglia, condizioni, isAvailable, descrizione, prezzo, createdAt, image }) => (
               <Card key={id} className="mb-3 card-annuncio d-flex flex-column h-100">
-                {imageUrls?.length > 0 && <Card.Img variant="top" src={imageUrls[0]} alt={titolo} style={{ objectFit: "cover", height: "180px" }} />}
+                <Card.Img variant="top" src={image || "/default-image.jpg"} alt={titolo} style={{ objectFit: "cover", height: "200px", width: "100%" }} />
 
                 <Card.Body className="flex-grow-1">
                   <Card.Title className="mb-2" style={{ color: "#9b59b6" }}>

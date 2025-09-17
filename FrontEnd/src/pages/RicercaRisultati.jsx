@@ -55,9 +55,9 @@ function RisultatiRicerca() {
                       <Col md={4}>
                         <Card.Img
                           variant="top"
-                          src={annuncio.imageUrls && annuncio.imageUrls.length > 0 ? annuncio.imageUrls[0] : "/default-image.jpg"}
+                          src={annuncio.image || "/default-image.jpg"}
                           alt={annuncio.titolo}
-                          style={{ objectFit: "cover", height: "200px" }}
+                          style={{ objectFit: "cover", height: "200px", width: "100%" }}
                         />
                       </Col>
 
