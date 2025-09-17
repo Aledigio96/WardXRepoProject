@@ -3,6 +3,7 @@ package alessandro.digiovanni.demo.payloads;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public record AnnuncioDTO(
         String categoria,
 
         @NotNull(message = "Le immagini non possono essere nulle")
-        List<@NotBlank(message = "L'url dell'immagine non può essere vuoto") String> imageUrls,
+        String image,
 
         @NotNull(message = "Lo sellerId è obbligatorio")
         Long sellerId

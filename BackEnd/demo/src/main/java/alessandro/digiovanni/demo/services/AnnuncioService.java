@@ -22,8 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 @Service
 public class AnnuncioService {
+
+    @Autowired
+    private Cloudinary cloudinary;
 
     @Autowired
     private AnnuncioRepository annuncioRepository;
@@ -31,82 +35,46 @@ public class AnnuncioService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private Cloudinary cloudinary;
-
     public List<AnnuncioDTO> findAll() {
-        List<Annuncio> annunci = annuncioRepository.findAll();
-        List<AnnuncioDTO> result = new ArrayList<>();
-
-        for (Annuncio annuncio : annunci) {
-            AnnuncioDTO dto = new AnnuncioDTO(
-                    annuncio.getId(),
-                    annuncio.getTitolo(),
-                    annuncio.getDescrizione(),
-                    annuncio.getPrezzo(),
-                    annuncio.getTaglia(),
-                    annuncio.getCondizioni() != null ? annuncio.getCondizioni().name() : null,
-                    annuncio.getAvailable(),
-                    annuncio.getCategoriaPrincipale() != null ? annuncio.getCategoriaPrincipale().name() : null,
-                    annuncio.getCategoria() != null ? annuncio.getCategoria().name() : null,
-                    annuncio.getImageUrls(),
-                    annuncio.getSeller() != null ? annuncio.getSeller().getId() : null
-            );
-            result.add(dto);
-        }
-        return result;
+        return annuncioRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     public AnnuncioDTO findById(Long id) {
         Annuncio annuncio = annuncioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Annuncio non trovato con id " + id));
-
-        return new AnnuncioDTO(
-                annuncio.getId(),
-                annuncio.getTitolo(),
-                annuncio.getDescrizione(),
-                annuncio.getPrezzo(),
-                annuncio.getTaglia(),
-                annuncio.getCondizioni() != null ? annuncio.getCondizioni().name() : null,
-                annuncio.getAvailable(),
-                annuncio.getCategoriaPrincipale() != null ? annuncio.getCategoriaPrincipale().name() : null,
-                annuncio.getCategoria() != null ? annuncio.getCategoria().name() : null,
-                annuncio.getImageUrls(),
-                annuncio.getSeller() != null ? annuncio.getSeller().getId() : null
-        );
+        return toDTO(annuncio);
     }
 
-    public AnnuncioDTO create(AnnuncioCreateDTO dto, String username) {
+    public AnnuncioDTO create(AnnuncioCreateDTO dto, String username, MultipartFile file) {
         User seller = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato: " + username));
+
+        // Upload immagine su Cloudinary
+        String imageUrl;
+        try {
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            imageUrl = uploadResult.get("secure_url").toString();
+        } catch (IOException e) {
+            throw new RuntimeException("Errore nel caricamento dell'immagine su Cloudinary", e);
+        }
 
         Annuncio annuncio = new Annuncio();
         annuncio.setTitolo(dto.titolo());
         annuncio.setDescrizione(dto.descrizione());
         annuncio.setPrezzo(dto.prezzo());
         annuncio.setTaglia(dto.taglia());
-        annuncio.setCondizioni(dto.condizioni() != null ? Condizioni.valueOf(dto.condizioni()) : null);
-        annuncio.setAvailable(dto.isAvailable() != null ? dto.isAvailable() : true);
-        annuncio.setCategoriaPrincipale(dto.categoriaPrincipale() != null ? CategoriPrincipale.valueOf(dto.categoriaPrincipale()) : null);
-        annuncio.setCategoria(dto.categoria() != null ? Categoria.valueOf(dto.categoria()) : null);
-        annuncio.setImageUrls(dto.imageUrls());
+        annuncio.setCondizioni(Condizioni.valueOf(dto.condizioni()));
+        annuncio.setAvailable(dto.isAvailable());
+        annuncio.setCategoriaPrincipale(CategoriPrincipale.valueOf(dto.categoriaPrincipale()));
+        annuncio.setCategoria(Categoria.valueOf(dto.categoria()));
+        annuncio.setImage(imageUrl);
         annuncio.setSeller(seller);
 
         Annuncio saved = annuncioRepository.save(annuncio);
-
-        return new AnnuncioDTO(
-                saved.getId(),
-                saved.getTitolo(),
-                saved.getDescrizione(),
-                saved.getPrezzo(),
-                saved.getTaglia(),
-                saved.getCondizioni() != null ? saved.getCondizioni().name() : null,
-                saved.getAvailable(),
-                saved.getCategoriaPrincipale() != null ? saved.getCategoriaPrincipale().name() : null,
-                saved.getCategoria() != null ? saved.getCategoria().name() : null,
-                saved.getImageUrls(),
-                saved.getSeller() != null ? saved.getSeller().getId() : null
-        );
+        return toDTO(saved);
     }
 
     public AnnuncioDTO update(Long id, AnnuncioUpdateDTO dto, String username) {
@@ -125,23 +93,21 @@ public class AnnuncioService {
         if (dto.isAvailable() != null) annuncio.setAvailable(dto.isAvailable());
         if (dto.categoriaPrincipale() != null) annuncio.setCategoriaPrincipale(CategoriPrincipale.valueOf(dto.categoriaPrincipale()));
         if (dto.categoria() != null) annuncio.setCategoria(Categoria.valueOf(dto.categoria()));
-        if (dto.imageUrls() != null) annuncio.setImageUrls(dto.imageUrls());
+
+        // Upload immagine nuova (se presente)
+        MultipartFile newImage = dto.image();
+        if (newImage != null && !newImage.isEmpty()) {
+            try {
+                Map<?, ?> uploadResult = cloudinary.uploader().upload(newImage.getBytes(), ObjectUtils.emptyMap());
+                String imageUrl = uploadResult.get("secure_url").toString();
+                annuncio.setImage(imageUrl);
+            } catch (IOException e) {
+                throw new RuntimeException("Errore nel caricamento della nuova immagine", e);
+            }
+        }
 
         Annuncio updated = annuncioRepository.save(annuncio);
-
-        return new AnnuncioDTO(
-                updated.getId(),
-                updated.getTitolo(),
-                updated.getDescrizione(),
-                updated.getPrezzo(),
-                updated.getTaglia(),
-                updated.getCondizioni() != null ? updated.getCondizioni().name() : null,
-                updated.getAvailable(),
-                updated.getCategoriaPrincipale() != null ? updated.getCategoriaPrincipale().name() : null,
-                updated.getCategoria() != null ? updated.getCategoria().name() : null,
-                updated.getImageUrls(),
-                updated.getSeller() != null ? updated.getSeller().getId() : null
-        );
+        return toDTO(updated);
     }
 
     public void delete(Long id, String username) {
@@ -155,7 +121,7 @@ public class AnnuncioService {
         annuncioRepository.deleteById(id);
     }
 
-    public List<String> uploadAnnuncioImages(Long annuncioId, User user, List<MultipartFile> files) {
+    public AnnuncioDTO uploadNewImage(Long annuncioId, User user, MultipartFile file) {
         Annuncio annuncio = annuncioRepository.findById(annuncioId)
                 .orElseThrow(() -> new RuntimeException("Annuncio non trovato"));
 
@@ -163,68 +129,40 @@ public class AnnuncioService {
             throw new UnauthorizedAnnuncioAccessException("Non sei il proprietario di questo annuncio");
         }
 
-        List<String> newImageUrls = new ArrayList<>();
-
-        for (MultipartFile file : files) {
-            try {
-                Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-                String imageUrl = uploadResult.get("secure_url").toString();
-                newImageUrls.add(imageUrl);
-            } catch (IOException e) {
-                throw new RuntimeException("Errore durante l'upload dell'immagine", e);
-            }
+        try {
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            String newImageUrl = uploadResult.get("secure_url").toString();
+            annuncio.setImage(newImageUrl);
+            annuncioRepository.save(annuncio);
+            return toDTO(annuncio);
+        } catch (IOException e) {
+            throw new RuntimeException("Errore durante l'upload della nuova immagine", e);
         }
-
-        List<String> updatedImageUrls = new ArrayList<>(annuncio.getImageUrls());
-        updatedImageUrls.addAll(newImageUrls);
-
-        annuncio.setImageUrls(updatedImageUrls);
-        annuncioRepository.save(annuncio);
-
-        return newImageUrls;
     }
 
-    public List<String> removeAnnuncioImage(Long annuncioId, User user, String imageUrlToRemove) {
-        Annuncio annuncio = annuncioRepository.findById(annuncioId)
-                .orElseThrow(() -> new RuntimeException("Annuncio non trovato"));
-
-        if (!annuncio.getSeller().getId().equals(user.getId())) {
-            throw new UnauthorizedAnnuncioAccessException("Non sei il proprietario di questo annuncio");
-        }
-
-        List<String> updatedImages = new ArrayList<>(annuncio.getImageUrls());
-
-        boolean removed = updatedImages.remove(imageUrlToRemove);
-        if (!removed) {
-            throw new RuntimeException("L'immagine da rimuovere non è presente nell'annuncio");
-        }
-
-        annuncio.setImageUrls(updatedImages);
-        annuncioRepository.save(annuncio);
-
-        return updatedImages;
-    }
     public List<AnnuncioDTO> findByUsername(String username) {
-        List<Annuncio> annunci = annuncioRepository.findBySellerUsername(username);
-
-        List<AnnuncioDTO> dtoList = new ArrayList<>();
-        for (Annuncio annuncio : annunci) {
-            AnnuncioDTO dto = new AnnuncioDTO(
-                    annuncio.getId(),
-                    annuncio.getTitolo(),
-                    annuncio.getDescrizione(),
-                    annuncio.getPrezzo(),
-                    annuncio.getTaglia(),
-                    annuncio.getCondizioni() != null ? annuncio.getCondizioni().name() : null,
-                    annuncio.getAvailable(),
-                    annuncio.getCategoriaPrincipale() != null ? annuncio.getCategoriaPrincipale().name() : null,
-                    annuncio.getCategoria() != null ? annuncio.getCategoria().name() : null,
-                    annuncio.getImageUrls(),
-                    annuncio.getSeller() != null ? annuncio.getSeller().getId() : null
-            );
-            dtoList.add(dto);
-        }
-        return dtoList;
+        return annuncioRepository.findBySellerUsername(username)
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
+    // ==============================
+    // 🔧 Metodo di supporto
+    // ==============================
+    private AnnuncioDTO toDTO(Annuncio annuncio) {
+        return new AnnuncioDTO(
+                annuncio.getId(),
+                annuncio.getTitolo(),
+                annuncio.getDescrizione(),
+                annuncio.getPrezzo(),
+                annuncio.getTaglia(),
+                annuncio.getCondizioni() != null ? annuncio.getCondizioni().name() : null,
+                annuncio.getAvailable(),
+                annuncio.getCategoriaPrincipale() != null ? annuncio.getCategoriaPrincipale().name() : null,
+                annuncio.getCategoria() != null ? annuncio.getCategoria().name() : null,
+                annuncio.getImage(),
+                annuncio.getSeller() != null ? annuncio.getSeller().getId() : null
+        );
+    }
 }

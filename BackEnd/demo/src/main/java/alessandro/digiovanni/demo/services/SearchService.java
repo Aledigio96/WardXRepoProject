@@ -45,7 +45,7 @@ public class SearchService {
                 annuncio.getAvailable(),
                 annuncio.getCategoriaPrincipale().name(),
                 annuncio.getCategoria().name(),
-                annuncio.getImageUrls(),
+                annuncio.getImage(),
                 annuncio.getSeller().getId()
         );
     }

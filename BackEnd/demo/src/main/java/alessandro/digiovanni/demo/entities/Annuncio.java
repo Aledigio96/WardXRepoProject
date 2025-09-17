@@ -5,6 +5,7 @@ import alessandro.digiovanni.demo.enums.CategoriPrincipale;
 import alessandro.digiovanni.demo.enums.Categoria;
 import alessandro.digiovanni.demo.enums.Condizioni;
 import jakarta.persistence.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,8 +26,8 @@ public class Annuncio {
     private CategoriPrincipale categoriaPrincipale;
     @Enumerated(EnumType.STRING)
     private Categoria categoria;
-    @ElementCollection
-    private List<String> imageUrls;
+
+    private String image;
     @ManyToOne
     @JoinColumn(name = "seller_id")
     private User seller;
@@ -34,7 +35,7 @@ public class Annuncio {
     public Annuncio() {
     }
 
-    public Annuncio(String titolo, String descrizione, Double prezzo, String taglia, Condizioni condizioni, Boolean isAvailable, CategoriPrincipale categoriaPrincipale, Categoria categoria, List<String> imageUrls, User seller) {
+    public Annuncio(String titolo, String descrizione, Double prezzo, String taglia, Condizioni condizioni, Boolean isAvailable, CategoriPrincipale categoriaPrincipale, Categoria categoria, String image, User seller) {
         this.titolo = titolo;
         this.descrizione = descrizione;
         this.prezzo = prezzo;
@@ -43,7 +44,7 @@ public class Annuncio {
         this.isAvailable = isAvailable;
         this.categoriaPrincipale = categoriaPrincipale;
         this.categoria = categoria;
-        this.imageUrls = imageUrls;
+        this.image = image;
         this.seller = seller;
     }
 
@@ -116,12 +117,12 @@ public class Annuncio {
         this.categoria = categoria;
     }
 
-    public List<String> getImageUrls() {
-        return imageUrls;
+    public String getImage() {
+        return image;
     }
 
-    public void setImageUrls(List<String> imageUrls) {
-        this.imageUrls = imageUrls;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public User getSeller() {

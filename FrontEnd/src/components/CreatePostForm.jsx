@@ -12,20 +12,11 @@ function CreatePostForm({ onPostCreated }) {
   const [available, setAvailable] = useState(true);
   const [categoriaPrincipale, setCategoriaPrincipale] = useState("");
   const [categoria, setCategoria] = useState("");
-  const [imageUrls, setImageUrls] = useState([""]);
+  const [imageFile, setImageFile] = useState(null);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  const handleImageUrlChange = (index, value) => {
-    const newUrls = [...imageUrls];
-    newUrls[index] = value;
-    setImageUrls(newUrls);
-  };
-
-  const addImageUrlField = () => {
-    setImageUrls([...imageUrls, ""]);
-  };
 
   const resetForm = () => {
     setTitolo("");
@@ -36,7 +27,7 @@ function CreatePostForm({ onPostCreated }) {
     setAvailable(true);
     setCategoriaPrincipale("");
     setCategoria("");
-    setImageUrls([""]);
+    setImageFile(null);
   };
 
   const handleSubmit = async (e) => {
@@ -52,6 +43,7 @@ function CreatePostForm({ onPostCreated }) {
       return;
     }
 
+    // DTO da inviare come JSON
     const dto = {
       titolo,
       descrizione,
@@ -61,17 +53,19 @@ function CreatePostForm({ onPostCreated }) {
       isAvailable: available,
       categoriaPrincipale: categoriaPrincipale || null,
       categoria: categoria || null,
-      imageUrls: imageUrls.filter((url) => url.trim() !== ""),
     };
+
+    const formData = new FormData();
+    formData.append("dto", new Blob([JSON.stringify(dto)], { type: "application/json" }));
+    formData.append("image", imageFile);
 
     try {
       const res = await fetch("http://localhost:3001/api/annunci", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(dto),
+        body: formData,
       });
 
       if (!res.ok) {
@@ -110,25 +104,25 @@ function CreatePostForm({ onPostCreated }) {
           {error && <Alert variant="danger">{error}</Alert>}
           {success && <Alert variant="success">{success}</Alert>}
 
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} encType="multipart/form-data">
             <Row>
               <Col md={6}>
-                <Form.Group className="mb-3" controlId="titolo">
+                <Form.Group className="mb-3">
                   <Form.Label>Titolo *</Form.Label>
                   <Form.Control type="text" value={titolo} onChange={(e) => setTitolo(e.target.value)} required />
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="prezzo">
+                <Form.Group className="mb-3">
                   <Form.Label>Prezzo *</Form.Label>
                   <Form.Control type="number" step="0.01" value={prezzo} onChange={(e) => setPrezzo(e.target.value)} required />
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="taglia">
+                <Form.Group className="mb-3">
                   <Form.Label>Taglia *</Form.Label>
                   <Form.Control type="text" value={taglia} onChange={(e) => setTaglia(e.target.value)} required />
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="condizioni">
+                <Form.Group className="mb-3">
                   <Form.Label>Condizioni *</Form.Label>
                   <Form.Select value={condizioni} onChange={(e) => setCondizioni(e.target.value)} required>
                     <option value="">Seleziona</option>
@@ -140,12 +134,12 @@ function CreatePostForm({ onPostCreated }) {
               </Col>
 
               <Col md={6}>
-                <Form.Group className="mb-3" controlId="descrizione">
+                <Form.Group className="mb-3">
                   <Form.Label>Descrizione *</Form.Label>
                   <Form.Control as="textarea" rows={8} value={descrizione} onChange={(e) => setDescrizione(e.target.value)} required />
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="available">
+                <Form.Group className="mb-3">
                   <Form.Check type="checkbox" label="Disponibile" checked={available} onChange={(e) => setAvailable(e.target.checked)} />
                 </Form.Group>
               </Col>
@@ -153,7 +147,7 @@ function CreatePostForm({ onPostCreated }) {
 
             <Row>
               <Col md={6}>
-                <Form.Group className="mb-3" controlId="categoriaPrincipale">
+                <Form.Group className="mb-3">
                   <Form.Label>Categoria Principale *</Form.Label>
                   <Form.Select value={categoriaPrincipale} onChange={(e) => setCategoriaPrincipale(e.target.value)} required>
                     <option value="">Seleziona</option>
@@ -165,7 +159,7 @@ function CreatePostForm({ onPostCreated }) {
               </Col>
 
               <Col md={6}>
-                <Form.Group className="mb-3" controlId="categoria">
+                <Form.Group className="mb-3">
                   <Form.Label>Categoria *</Form.Label>
                   <Form.Select value={categoria} onChange={(e) => setCategoria(e.target.value)} required>
                     <option value="">Seleziona</option>
@@ -181,28 +175,15 @@ function CreatePostForm({ onPostCreated }) {
             </Row>
 
             <Form.Group className="mb-3">
-              <Form.Label>URL Immagini *</Form.Label>
-              {imageUrls.map((url, index) => (
-                <Form.Control
-                  key={index}
-                  type="text"
-                  placeholder={`URL immagine ${index + 1}`}
-                  value={url}
-                  onChange={(e) => handleImageUrlChange(index, e.target.value)}
-                  className="mb-2"
-                  required
-                />
-              ))}
-              <Button variant="outline-secondary" onClick={addImageUrlField} disabled={loading}>
-                + Aggiungi un'altra immagine
-              </Button>
+              <Form.Label>Immagine *</Form.Label>
+              <Form.Control type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} required />
             </Form.Group>
 
             <div className="d-flex justify-content-end mt-4">
               <Button variant="secondary" onClick={() => setShow(false)} className="me-2" disabled={loading}>
                 Annulla
               </Button>
-              <Button variant="primary" type="submit" disabled={loading}>
+              <Button variant="primary" type="submit" disabled={loading || !imageFile}>
                 {loading ? (
                   <>
                     <Spinner animation="border" size="sm" /> Caricamento...

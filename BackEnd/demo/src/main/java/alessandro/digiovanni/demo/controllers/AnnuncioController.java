@@ -7,6 +7,7 @@ import alessandro.digiovanni.demo.payloads.AnnuncioUpdateDTO;
 import alessandro.digiovanni.demo.services.AnnuncioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +18,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/annunci")
-
 public class AnnuncioController {
 
     @Autowired
@@ -28,55 +28,61 @@ public class AnnuncioController {
         return annuncioService.findAll();
     }
 
-
     @GetMapping("/{id}")
     public AnnuncioDTO getById(@PathVariable Long id) {
         return annuncioService.findById(id);
     }
 
-
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    @PostMapping
-    public AnnuncioDTO create(@Valid @RequestBody AnnuncioCreateDTO dto,
-                              @AuthenticationPrincipal UserDetails userDetails) {
-        return annuncioService.create(dto, userDetails.getUsername());
+    public AnnuncioDTO create(
+            @RequestPart("dto") @Valid AnnuncioCreateDTO dto,
+            @RequestPart("image") MultipartFile image,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return annuncioService.create(dto, userDetails.getUsername(), image);
     }
 
-
+    @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    @PatchMapping("/{id}")
     public AnnuncioDTO updateParziale(@PathVariable Long id,
-                                      @RequestBody AnnuncioUpdateDTO dto,
+                                      @RequestPart("dto") AnnuncioUpdateDTO dtoRequestPart,
+                                      @RequestPart(name = "image", required = false) MultipartFile image,
                                       @AuthenticationPrincipal UserDetails userDetails) {
+        // Costruisci nuovo record con immagine inclusa
+        AnnuncioUpdateDTO dto = new AnnuncioUpdateDTO(
+                dtoRequestPart.titolo(),
+                dtoRequestPart.descrizione(),
+                dtoRequestPart.prezzo(),
+                dtoRequestPart.taglia(),
+                dtoRequestPart.condizioni(),
+                dtoRequestPart.isAvailable(),
+                dtoRequestPart.categoriaPrincipale(),
+                dtoRequestPart.categoria(),
+                image
+        );
+
         return annuncioService.update(id, dto, userDetails.getUsername());
     }
 
-
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public void delete(@PathVariable Long id,
                        @AuthenticationPrincipal UserDetails userDetails) {
         annuncioService.delete(id, userDetails.getUsername());
     }
-    @PostMapping("/{id}/images")
+
+    @PostMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public List<String> uploadAnnuncioImages(
+    public AnnuncioDTO uploadNewImage(
             @PathVariable Long id,
-            @AuthenticationPrincipal User user,
-            @RequestParam("files") List<MultipartFile> files) {
-        return annuncioService.uploadAnnuncioImages(id, user, files);
+            @RequestPart("image") MultipartFile image,
+            @AuthenticationPrincipal User user) {
+        return annuncioService.uploadNewImage(id, user, image);
     }
 
-    @DeleteMapping("/{id}/images")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public List<String> removeAnnuncioImage(
-            @PathVariable Long id,
-            @AuthenticationPrincipal User user,
-            @RequestParam("url") String imageUrl) {
-        return annuncioService.removeAnnuncioImage(id, user, imageUrl);
-    }
     @GetMapping("/user/{username}")
     public List<AnnuncioDTO> getAnnunciBySellerUsername(@PathVariable String username) {
         return annuncioService.findByUsername(username);
     }
 }
+
