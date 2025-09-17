@@ -15,6 +15,7 @@ function ProfiloPubblico() {
     const fetchUserAndAnnunci = async () => {
       setLoading(true);
       try {
+        // Fetch user
         const resUser = await fetch(`http://localhost:3001/api/users/${username}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -24,6 +25,7 @@ function ProfiloPubblico() {
         const userData = await resUser.json();
         setUser(userData);
 
+        // Fetch user's announcements
         const resAnnunci = await fetch(`http://localhost:3001/api/annunci/user/${username}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -42,6 +44,7 @@ function ProfiloPubblico() {
     fetchUserAndAnnunci();
   }, [username, token]);
 
+  // Loading state
   if (loading) {
     return (
       <Container className="text-center mt-5">
@@ -50,6 +53,7 @@ function ProfiloPubblico() {
     );
   }
 
+  // Error state
   if (error) {
     return (
       <Container className="text-center mt-5">
@@ -65,20 +69,29 @@ function ProfiloPubblico() {
           <Image src={user.avatarUrl || "/default-avatar.png"} roundedCircle width={80} height={80} className="me-4" alt={user.username} />
           <div>
             <Card.Title className="mb-0">{user.username}</Card.Title>
-            {user.bio && <Card.Text className="mb-0">{user.bio}</Card.Text>}
+
+            {user.bio && <Card.Text className="mb-1">{user.bio}</Card.Text>}
+
+            {user.provinciaSigla && (
+              <Card.Text className="text-muted mb-0">
+                <small>Provincia: {user.provinciaSigla}</small>
+              </Card.Text>
+            )}
           </div>
         </Card.Body>
       </Card>
 
+      <h4 className="mb-4">Annunci di {user.username}</h4>
       <Row>
-        <Col>
-          <h4>Annunci di {user.username}</h4>
-          {annunci.length === 0 ? (
+        {annunci.length === 0 ? (
+          <Col>
             <p>Nessun annuncio pubblicato.</p>
-          ) : (
-            annunci.map(({ id, titolo, categoriaPrincipale, categoria, taglia, condizioni, isAvailable, descrizione, prezzo, createdAt, image }) => (
-              <Card key={id} className="mb-3 card-annuncio d-flex flex-column h-100">
-                <Card.Img variant="top" src={image || "/default-image.jpg"} alt={titolo} style={{ objectFit: "cover", height: "200px", width: "100%" }} />
+          </Col>
+        ) : (
+          annunci.map(({ id, titolo, categoriaPrincipale, categoria, taglia, condizioni, isAvailable, descrizione, prezzo, createdAt, image }) => (
+            <Col key={id} lg={4} md={6} sm={12} className="mb-4">
+              <Card className="h-100 card-annuncio d-flex flex-column">
+                {image && <Card.Img variant="top" src={image} alt={titolo} style={{ objectFit: "cover", height: "200px", width: "100%" }} />}
 
                 <Card.Body className="flex-grow-1">
                   <Card.Title className="mb-2" style={{ color: "#9b59b6" }}>
@@ -88,24 +101,19 @@ function ProfiloPubblico() {
                   <Card.Text className="mb-1">
                     <strong>Categoria:</strong> {categoriaPrincipale} / {categoria}
                   </Card.Text>
-
                   <Card.Text className="mb-1">
                     <strong>Taglia:</strong> {taglia}
                   </Card.Text>
-
                   <Card.Text className="mb-1">
                     <strong>Condizioni:</strong> {condizioni}
                   </Card.Text>
-
                   <Card.Text className="mb-1">
                     <strong>Disponibilità:</strong>{" "}
                     <span style={{ color: isAvailable ? "green" : "red" }}>{isAvailable ? "Disponibile" : "Non disponibile"}</span>
                   </Card.Text>
-
                   <Card.Text className="mb-2" style={{ fontStyle: "italic" }}>
                     {descrizione}
                   </Card.Text>
-
                   {createdAt && <small className="text-muted">Pubblicato il: {new Date(createdAt).toLocaleDateString()}</small>}
                 </Card.Body>
 
@@ -113,9 +121,9 @@ function ProfiloPubblico() {
                   <strong style={{ color: "#2c3e50" }}>{prezzo != null ? `${prezzo.toFixed(2)} €` : "Prezzo non disponibile"}</strong>
                 </Card.Footer>
               </Card>
-            ))
-          )}
-        </Col>
+            </Col>
+          ))
+        )}
       </Row>
     </Container>
   );

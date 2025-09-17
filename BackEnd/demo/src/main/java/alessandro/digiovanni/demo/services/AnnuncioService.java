@@ -147,6 +147,10 @@ public class AnnuncioService {
                 .toList();
     }
     private AnnuncioDTO toDTO(Annuncio annuncio) {
+        Long sellerId = annuncio.getSeller() != null ? annuncio.getSeller().getId() : null;
+        if (sellerId == null) {
+            System.out.println("Warning: seller o sellerId è null per annuncio con id = " + annuncio.getId());
+        }
         return new AnnuncioDTO(
                 annuncio.getId(),
                 annuncio.getTitolo(),
@@ -158,7 +162,7 @@ public class AnnuncioService {
                 annuncio.getCategoriaPrincipale() != null ? annuncio.getCategoriaPrincipale().name() : null,
                 annuncio.getCategoria() != null ? annuncio.getCategoria().name() : null,
                 annuncio.getImage(),
-                annuncio.getSeller() != null ? annuncio.getSeller().getId() : null
+                sellerId
         );
     }
 }

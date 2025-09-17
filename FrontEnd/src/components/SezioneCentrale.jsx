@@ -4,12 +4,25 @@ import CarouselPrincipal from "./CarouselPrincipal";
 import "../SezioneCentrale.css";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 function SezioneCentrale() {
   const [showModal, setShowModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPerson, setSelectedPerson] = useState("");
   const [annunci, setAnnunci] = useState([]);
+
+  const dispatch = useDispatch();
+
+  let user = null;
+  try {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      user = JSON.parse(storedUser);
+    }
+  } catch (e) {
+    // errore parsing utente
+  }
 
   const categories = [
     { id: "tshirt", label: "T-SHIRT", icon: <FaMale color="#9b59b6" /> },
@@ -39,7 +52,7 @@ function SezioneCentrale() {
         setAnnunci(shuffled.slice(0, 6));
       })
       .catch((err) => {
-        console.error("Errore durante la fetch:", err);
+        // errore fetch
       });
   }, []);
 
@@ -57,6 +70,13 @@ function SezioneCentrale() {
     setShowModal(false);
     setSelectedCategory("");
     setSelectedPerson("");
+  };
+
+  const aggiungiAlCarrello = (prodotto) => {
+    const conferma = window.confirm("Vuoi aggiungere l'articolo al carrello?");
+    if (conferma) {
+      dispatch({ type: "FILL_CART", payload: prodotto });
+    }
   };
 
   return (
@@ -94,44 +114,74 @@ function SezioneCentrale() {
           <h2 className="text-center mb-4" style={{ color: "#9b59b6" }}>
             Ultimi Annunci
           </h2>
-          {annunci.map(({ id, titolo, descrizione, prezzo, taglia, condizioni, isAvailable, categoriaPrincipale, categoria, image }) => (
-            <Col key={id} md={4} className="mb-4">
-              <Card className="h-100 card-annuncio">
-                <Card.Img variant="top" src={image || "/default-image.jpg"} alt={titolo} style={{ objectFit: "cover", height: "200px", width: "100%" }} />
+          {annunci.map(({ id, titolo, descrizione, prezzo, taglia, condizioni, isAvailable, categoriaPrincipale, categoria, image, sellerId }) => {
+            const userIdStr = user ? String(user.id) : null;
+            const sellerIdStr = sellerId ? String(sellerId) : null;
+            const isMyArticle = userIdStr && sellerIdStr && userIdStr === sellerIdStr;
 
-                <Card.Body>
-                  <Card.Title className="mb-2" style={{ color: "#9b59b6" }}>
-                    {titolo}
-                  </Card.Title>
+            return (
+              <Col key={id} md={4} className="mb-4">
+                <Card className="h-100 card-annuncio">
+                  <Card.Img variant="top" src={image || "/default-image.jpg"} alt={titolo} style={{ objectFit: "cover", height: "200px", width: "100%" }} />
 
-                  <Card.Text className="mb-1">
-                    <strong>Categoria:</strong> {categoriaPrincipale} / {categoria}
-                  </Card.Text>
+                  <Card.Body>
+                    <Card.Title className="mb-2" style={{ color: "#9b59b6" }}>
+                      {titolo}
+                    </Card.Title>
 
-                  <Card.Text className="mb-1">
-                    <strong>Taglia:</strong> {taglia}
-                  </Card.Text>
+                    <Card.Text className="mb-1">
+                      <strong>Categoria:</strong> {categoriaPrincipale} / {categoria}
+                    </Card.Text>
 
-                  <Card.Text className="mb-1">
-                    <strong>Condizioni:</strong> {condizioni}
-                  </Card.Text>
+                    <Card.Text className="mb-1">
+                      <strong>Taglia:</strong> {taglia}
+                    </Card.Text>
 
-                  <Card.Text className="mb-2">
-                    <strong>Disponibilità:</strong>{" "}
-                    <span style={{ color: isAvailable ? "green" : "red" }}>{isAvailable ? "Disponibile" : "Non disponibile"}</span>
-                  </Card.Text>
+                    <Card.Text className="mb-1">
+                      <strong>Condizioni:</strong> {condizioni}
+                    </Card.Text>
 
-                  <Card.Text className="mb-2" style={{ fontStyle: "italic" }}>
-                    {descrizione}
-                  </Card.Text>
-                </Card.Body>
+                    <Card.Text className="mb-2">
+                      <strong>Disponibilità:</strong>{" "}
+                      <span style={{ color: isAvailable ? "green" : "red" }}>{isAvailable ? "Disponibile" : "Non disponibile"}</span>
+                    </Card.Text>
 
-                <Card.Footer>
-                  <strong style={{ color: "#2c3e50" }}>{prezzo.toFixed(2)} €</strong>
-                </Card.Footer>
-              </Card>
-            </Col>
-          ))}
+                    <Card.Text className="mb-2" style={{ fontStyle: "italic" }}>
+                      {descrizione}
+                    </Card.Text>
+                  </Card.Body>
+
+                  <Card.Footer className="d-flex justify-content-between align-items-center">
+                    <strong style={{ color: "#2c3e50" }}>{prezzo.toFixed(2)} €</strong>
+
+                    {isMyArticle ? (
+                      <span style={{ color: "#9b59b6", fontWeight: "bold" }}>È un tuo articolo!</span>
+                    ) : (
+                      <Button
+                        variant="success"
+                        size="sm"
+                        disabled={!isAvailable}
+                        onClick={() =>
+                          aggiungiAlCarrello({
+                            id,
+                            titolo,
+                            prezzo,
+                            taglia,
+                            condizioni,
+                            categoriaPrincipale,
+                            categoria,
+                            image,
+                          })
+                        }
+                      >
+                        Acquista
+                      </Button>
+                    )}
+                  </Card.Footer>
+                </Card>
+              </Col>
+            );
+          })}
         </Row>
       </Container>
 
