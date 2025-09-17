@@ -52,7 +52,7 @@ public class AnnuncioService {
         User seller = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato: " + username));
 
-        // Upload immagine su Cloudinary
+
         String imageUrl;
         try {
             Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
@@ -94,7 +94,7 @@ public class AnnuncioService {
         if (dto.categoriaPrincipale() != null) annuncio.setCategoriaPrincipale(CategoriPrincipale.valueOf(dto.categoriaPrincipale()));
         if (dto.categoria() != null) annuncio.setCategoria(Categoria.valueOf(dto.categoria()));
 
-        // Upload immagine nuova (se presente)
+
         MultipartFile newImage = dto.image();
         if (newImage != null && !newImage.isEmpty()) {
             try {
@@ -146,10 +146,6 @@ public class AnnuncioService {
                 .map(this::toDTO)
                 .toList();
     }
-
-    // ==============================
-    // 🔧 Metodo di supporto
-    // ==============================
     private AnnuncioDTO toDTO(Annuncio annuncio) {
         return new AnnuncioDTO(
                 annuncio.getId(),

@@ -48,7 +48,7 @@ public class AnnuncioController {
                                       @RequestPart("dto") AnnuncioUpdateDTO dtoRequestPart,
                                       @RequestPart(name = "image", required = false) MultipartFile image,
                                       @AuthenticationPrincipal UserDetails userDetails) {
-        // Costruisci nuovo record con immagine inclusa
+
         AnnuncioUpdateDTO dto = new AnnuncioUpdateDTO(
                 dtoRequestPart.titolo(),
                 dtoRequestPart.descrizione(),

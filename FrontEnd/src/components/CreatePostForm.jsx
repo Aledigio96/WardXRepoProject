@@ -43,7 +43,6 @@ function CreatePostForm({ onPostCreated }) {
       return;
     }
 
-    // DTO da inviare come JSON
     const dto = {
       titolo,
       descrizione,
