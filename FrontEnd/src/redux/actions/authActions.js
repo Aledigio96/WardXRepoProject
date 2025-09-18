@@ -55,3 +55,30 @@ export const uploadAvatar = (file, token) => async (dispatch) => {
     });
   }
 };
+
+export const loadAnnunci = () => async (dispatch) => {
+  try {
+    const response = await fetch("http://localhost:3001/api/annunci");
+    if (!response.ok) {
+      throw new Error("Errore nel recupero degli annunci");
+    }
+    const data = await response.json();
+    dispatch({
+      type: "LOAD_ANNUNCI",
+      payload: data,
+    });
+  } catch (error) {
+    console.error("Errore nel recupero degli annunci:", error);
+    dispatch({
+      type: "LOAD_ANNUNCI_ERROR",
+      payload: error.message,
+    });
+  }
+};
+
+export const fillCart = (prodotto) => {
+  return {
+    type: "FILL_CART",
+    payload: prodotto,
+  };
+};
