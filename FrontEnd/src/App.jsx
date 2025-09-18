@@ -12,6 +12,7 @@ import Profilo from "./pages/Profilo";
 import ScopriOra from "./pages/ScopriOra";
 import RisultatiRicerca from "./pages/RicercaRisultati";
 import ProfiloPubblico from "./pages/ProfiloPubblico";
+import Carrello from "./pages/Carrello";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="/scopriora" element={<ScopriOra />} />
             <Route path="/risultati" element={<RisultatiRicerca />} />
             <Route path="/utente/:username" element={<ProfiloPubblico />} />
+            <Route path="/carrello" element={<Carrello />} />
           </Routes>
         </main>
         <Footer />

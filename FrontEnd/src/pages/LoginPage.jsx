@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux"; // Importa useDispatch
+import { login } from "../redux/actions/authActions"; // Importa l'azione login
 
 function LoginPage() {
   const [show, setShow] = useState(true);
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(true); // Stato per decidere se è Login o Registrazione
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -15,21 +17,28 @@ function LoginPage() {
   });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch(); // Ottieni il dispatch da Redux
 
+  // Funzione per chiudere il modal e tornare alla home
   const handleClose = () => {
+    console.log("Chiusura modal e reindirizzamento alla home"); // Log per il debug
     setShow(false);
     navigate("/");
   };
 
+  // Gestore cambiamento input
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(`Cambiato campo ${name}: ${value}`); // Log per il debug
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
+  // Funzione per fetchare il profilo utente dopo il login
   const fetchUserProfile = async (token) => {
+    console.log("Recupero del profilo utente con token:", token); // Log per il debug
     try {
       const response = await fetch("http://localhost:3001/api/users/profile", {
         headers: {
@@ -42,15 +51,18 @@ function LoginPage() {
       }
 
       const userData = await response.json();
+      console.log("Profilo utente recuperato:", userData); // Log per il debug
 
-      localStorage.setItem("user", JSON.stringify(userData));
+      // Dispatch dei dati dell'utente e del token in Redux
+      dispatch(login(userData, token)); // Passa anche il token
       return userData;
     } catch (error) {
-      console.error(error);
+      console.error("Errore nel recupero del profilo:", error); // Log per il debug
       return null;
     }
   };
 
+  // Funzione per il submit del form (Login o Registrazione)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -70,6 +82,8 @@ function LoginPage() {
           provinciaSigla: formData.provinciaSigla,
         };
 
+    console.log("Invio richiesta:", url, body); // Log per il debug
+
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -81,20 +95,30 @@ function LoginPage() {
 
       if (!response.ok) {
         const errData = await response.json();
+        console.error("Errore nella richiesta:", errData.message); // Log per il debug
         throw new Error(errData.message || "Errore durante la richiesta");
       }
 
       const data = await response.json();
+      console.log("Risposta ricevuta:", data); // Log per il debug
 
+      // Se è un login e ci sono i dati dell'utente, fetchiamo il profilo
       if (isLogin && data.accessToken) {
-        localStorage.setItem("token", data.accessToken);
-
+        console.log("Token di accesso ricevuto, recupero profilo utente"); // Log per il debug
+        // Salviamo solo il token nell'header per future chiamate (opzionale)
         await fetchUserProfile(data.accessToken);
       }
 
+      // Salva il token nel localStorage (opzionale)
+      if (data.accessToken) {
+        localStorage.setItem("token", data.accessToken);
+      }
+
       setShow(false);
-      navigate("/profilo");
+      console.log("Login o registrazione completata, reindirizzamento al profilo"); // Log per il debug
+      navigate("/profilo"); // Vai alla pagina del profilo
     } catch (error) {
+      console.error("Errore durante il login o la registrazione:", error); // Log per il debug
       alert("Errore: " + error.message);
     }
   };
@@ -107,6 +131,7 @@ function LoginPage() {
 
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
+          {/* Form di registrazione (solo se non è login) */}
           {!isLogin && (
             <>
               <Form.Group className="mb-3">
@@ -138,6 +163,7 @@ function LoginPage() {
             </>
           )}
 
+          {/* Form di login */}
           <Form.Group className="mb-3">
             <Form.Label>Email</Form.Label>
             <Form.Control type="email" name="email" placeholder="Inserisci email" value={formData.email} onChange={handleChange} required />

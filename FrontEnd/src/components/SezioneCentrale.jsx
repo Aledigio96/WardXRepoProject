@@ -1,12 +1,14 @@
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import { FaMale, FaFemale, FaChild } from "react-icons/fa";
-import CarouselPrincipal from "./CarouselPrincipal";
-import "../SezioneCentrale.css";
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import CarouselPrincipal from "./CarouselPrincipal";
+import "../SezioneCentrale.css";
 
+// Funzione per la Sezione Centrale
 function SezioneCentrale() {
+  // Stati locali
   const [showModal, setShowModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPerson, setSelectedPerson] = useState("");
@@ -14,6 +16,7 @@ function SezioneCentrale() {
 
   const dispatch = useDispatch();
 
+  // Recupera l'utente dal localStorage
   let user = null;
   try {
     const storedUser = localStorage.getItem("user");
@@ -21,9 +24,10 @@ function SezioneCentrale() {
       user = JSON.parse(storedUser);
     }
   } catch (e) {
-    // errore parsing utente
+    console.error("Errore nel parsing dell'utente:", e);
   }
 
+  // Definizioni per categorie e persone
   const categories = [
     { id: "tshirt", label: "T-SHIRT", icon: <FaMale color="#9b59b6" /> },
     { id: "giacche", label: "GIACCHE", icon: <FaFemale color="#9b59b6" /> },
@@ -39,6 +43,7 @@ function SezioneCentrale() {
     { id: "bambino", icon: <FaChild size={48} color="#9b59b6" />, label: "Bambino" },
   ];
 
+  // Effetto per caricare gli annunci dal server
   useEffect(() => {
     fetch("http://localhost:3001/api/annunci")
       .then((res) => {
@@ -49,13 +54,14 @@ function SezioneCentrale() {
       })
       .then((data) => {
         const shuffled = data.sort(() => 0.5 - Math.random());
-        setAnnunci(shuffled.slice(0, 6));
+        setAnnunci(shuffled.slice(0, 6)); // Carica solo i primi 6 annunci random
       })
       .catch((err) => {
-        // errore fetch
+        console.error("Errore nel recupero degli annunci:", err);
       });
   }, []);
 
+  // Gestori per le categorie e persone
   const handleIconClick = (personId) => {
     setSelectedPerson(personId);
     setSelectedCategory("");
@@ -72,6 +78,7 @@ function SezioneCentrale() {
     setSelectedPerson("");
   };
 
+  // Funzione per aggiungere un prodotto al carrello
   const aggiungiAlCarrello = (prodotto) => {
     const conferma = window.confirm("Vuoi aggiungere l'articolo al carrello?");
     if (conferma) {
@@ -81,6 +88,7 @@ function SezioneCentrale() {
 
   return (
     <>
+      {/* Titolo e descrizione */}
       <div className="carousel-title-wrapper text-center my-4">
         <h1 className="street-title">
           WARD<span className="highlight">X</span>
@@ -96,10 +104,12 @@ function SezioneCentrale() {
         </div>
       </div>
 
+      {/* Carousel */}
       <div className="fullwidth-carousel-wrapper">
         <CarouselPrincipal />
       </div>
 
+      {/* Sezione per selezionare persone */}
       <Container className="mt-5">
         <Row className="text-center mb-5 justify-content-center">
           {peopleIcons.map(({ id, icon, label }) => (
@@ -110,6 +120,7 @@ function SezioneCentrale() {
           ))}
         </Row>
 
+        {/* Annunci */}
         <Row>
           <h2 className="text-center mb-4" style={{ color: "#9b59b6" }}>
             Ultimi Annunci
@@ -123,37 +134,31 @@ function SezioneCentrale() {
               <Col key={id} md={4} className="mb-4">
                 <Card className="h-100 card-annuncio">
                   <Card.Img variant="top" src={image || "/default-image.jpg"} alt={titolo} style={{ objectFit: "cover", height: "200px", width: "100%" }} />
-
                   <Card.Body>
                     <Card.Title className="mb-2" style={{ color: "#9b59b6" }}>
                       {titolo}
                     </Card.Title>
-
                     <Card.Text className="mb-1">
                       <strong>Categoria:</strong> {categoriaPrincipale} / {categoria}
                     </Card.Text>
-
                     <Card.Text className="mb-1">
                       <strong>Taglia:</strong> {taglia}
                     </Card.Text>
-
                     <Card.Text className="mb-1">
                       <strong>Condizioni:</strong> {condizioni}
                     </Card.Text>
-
                     <Card.Text className="mb-2">
                       <strong>Disponibilità:</strong>{" "}
                       <span style={{ color: isAvailable ? "green" : "red" }}>{isAvailable ? "Disponibile" : "Non disponibile"}</span>
                     </Card.Text>
-
                     <Card.Text className="mb-2" style={{ fontStyle: "italic" }}>
                       {descrizione}
                     </Card.Text>
                   </Card.Body>
 
+                  {/* Footer con prezzo e bottone Acquista */}
                   <Card.Footer className="d-flex justify-content-between align-items-center">
                     <strong style={{ color: "#2c3e50" }}>{prezzo.toFixed(2)} €</strong>
-
                     {isMyArticle ? (
                       <span style={{ color: "#9b59b6", fontWeight: "bold" }}>È un tuo articolo!</span>
                     ) : (
@@ -185,6 +190,7 @@ function SezioneCentrale() {
         </Row>
       </Container>
 
+      {/* Modale per la selezione delle categorie */}
       {showModal && (
         <div className="modal-backdrop">
           <div className="modal-content-category">
@@ -210,6 +216,7 @@ function SezioneCentrale() {
         </div>
       )}
 
+      {/* Stili per il modale */}
       <style>{`
         .modal-backdrop {
           position: fixed;

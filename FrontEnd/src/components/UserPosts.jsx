@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { Row, Col, Card, Button } from "react-bootstrap";
+import { useSelector } from "react-redux"; // Importa Redux hooks
 
 function UserPosts({ posts, onDeleteSuccess }) {
   const [loadingId, setLoadingId] = useState(null);
 
-  const token = localStorage.getItem("token");
+  // Ottieni il token dallo stato Redux
+  const token = useSelector((state) => state.auth.token);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated); // Verifica se l'utente è autenticato
 
   const handleDelete = async (id) => {
-    if (!token) {
+    if (!token || !isAuthenticated) {
       alert("Utente non autenticato. Effettua il login.");
       return;
     }
