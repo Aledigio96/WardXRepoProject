@@ -13,8 +13,20 @@ import ScopriOra from "./pages/ScopriOra";
 import RisultatiRicerca from "./pages/RicercaRisultati";
 import ProfiloPubblico from "./pages/ProfiloPubblico";
 import Carrello from "./pages/Carrello";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setUserFromStorage } from "./redux/actions/authActions";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (token && user) {
+      dispatch(setUserFromStorage(JSON.parse(user), token));
+    }
+  }, [dispatch]);
   return (
     <BrowserRouter>
       <div className="app-wrapper">

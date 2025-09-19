@@ -1,11 +1,23 @@
-export const login = (user, token) => ({
-  type: "LOGIN",
+export const login = (user, token) => {
+  // Salva in localStorage
+  localStorage.setItem("token", token);
+  localStorage.setItem("user", JSON.stringify(user));
+  return {
+    type: "LOGIN",
+    payload: { user, token },
+  };
+};
+
+export const setUserFromStorage = (user, token) => ({
+  type: "SET_USER_FROM_STORAGE",
   payload: { user, token },
 });
 
 export const logout = () => (dispatch) => {
   // Resetta lo stato dell'utente a null
   dispatch({ type: "LOGOUT" });
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
 
   // Rimuove il token dal localStorage o sessionStorage
   localStorage.removeItem("token");

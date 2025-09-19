@@ -28,6 +28,14 @@ const authReducer = (state = initialState, action) => {
           avatarUrl: action.payload,
         },
       };
+    case "SET_USER_FROM_STORAGE":
+      return {
+        ...state,
+        user: action.payload.user,
+        token: action.payload.token,
+        isAuthenticated: true,
+      };
+
     default:
       return state;
   }
