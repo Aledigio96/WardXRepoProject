@@ -60,27 +60,29 @@ function TopBar() {
               </div>
             </Container>
           </Nav>
-          <Form className="d-flex mx-auto my-2 my-lg-0" onSubmit={handleSearchSubmit}>
-            <FormControl
-              type="search"
-              placeholder="Cerca abbigliamento, brand, utenti..."
-              className="me-2"
-              aria-label="Search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <Button type="submit" variant="outline-secondary">
-              <FaSearch />
-            </Button>
-          </Form>
           <Nav className="ms-auto d-flex align-items-center">
+            {/* Searchbar PRIMA di login/logout */}
+            <div className="mx-2" style={{ maxWidth: "300px", width: "100%" }}>
+              <Form className="d-flex my-2 my-lg-0" onSubmit={handleSearchSubmit}>
+                <FormControl
+                  type="search"
+                  placeholder="Cerca abbigliamento, brand, utenti..."
+                  aria-label="Search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <Button type="submit" variant="outline-secondary">
+                  <FaSearch />
+                </Button>
+              </Form>
+            </div>
             {!isLoggedIn ? (
               <Nav.Link as={Link} to="/iscriviti/login">
                 Iscriviti/Login
               </Nav.Link>
             ) : (
               <>
-                <Button variant="link" onClick={handleLogout} className="p-0 me-2 text-decoration-none text-dark">
+                <Button variant="link" onClick={handleLogout} className="p-0 me-2 text-decoration-none text-dark ms-4">
                   Logout
                 </Button>
               </>
