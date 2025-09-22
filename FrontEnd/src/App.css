@@ -321,3 +321,7 @@ textarea.form-control {
   resize: none;
   border-radius: 8px;
 }
+.color-shirt {
+  color: #9b59b6;
+  width: 50px;
+}

@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -176,4 +177,11 @@ public class UserController {
                 user.getProvincia() != null ? user.getProvincia().getSigla() : null,
                 user.getCreatedAt()
         );
-    }}
+    }
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void delete(@PathVariable Long id) {
+       userService.delete(id);
+    }
+
+}

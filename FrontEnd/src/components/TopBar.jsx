@@ -38,7 +38,7 @@ function TopBar() {
     <Navbar expand="lg" bg="light" className="mb-3">
       <Container fluid>
         <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
-          <FaTshirt className="me-2" />
+          <FaTshirt className=" color-shirt" />
           WardX
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="topbar-navbar" />

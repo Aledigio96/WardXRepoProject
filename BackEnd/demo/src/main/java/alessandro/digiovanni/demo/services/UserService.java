@@ -1,10 +1,12 @@
 package alessandro.digiovanni.demo.services;
 
+import alessandro.digiovanni.demo.entities.Annuncio;
 import alessandro.digiovanni.demo.entities.Provincia;
 import alessandro.digiovanni.demo.entities.User;
 import alessandro.digiovanni.demo.enums.Role;
 import alessandro.digiovanni.demo.exceptions.BadRequestException;
 import alessandro.digiovanni.demo.exceptions.NotFoundException;
+import alessandro.digiovanni.demo.exceptions.UnauthorizedAnnuncioAccessException;
 import alessandro.digiovanni.demo.payloads.NewUserDTO;
 import alessandro.digiovanni.demo.payloads.UpdateUserDTO;
 import alessandro.digiovanni.demo.repositories.UserRepository;
@@ -129,5 +131,11 @@ public class UserService {
 
         user.setRole(roleEnum);
         return userRepository.save(user);
+    }
+    public void delete(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utente non trovato con id " + id));
+
+        userRepository.deleteById(id);
     }
 }

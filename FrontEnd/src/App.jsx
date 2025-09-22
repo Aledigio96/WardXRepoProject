@@ -16,6 +16,8 @@ import Carrello from "./pages/Carrello";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setUserFromStorage } from "./redux/actions/authActions";
+import Backoffice from "./pages/BackOffice";
+import VisualizeUsers from "./components/VisualizeUsers";
 
 function App() {
   const dispatch = useDispatch();
@@ -41,6 +43,8 @@ function App() {
             <Route path="/risultati" element={<RisultatiRicerca />} />
             <Route path="/utente/:username" element={<ProfiloPubblico />} />
             <Route path="/carrello" element={<Carrello />} />
+            <Route path="/backoffice" element={<Backoffice />} />
+            <Route path="/visualizeusers" element={<VisualizeUsers />} />
           </Routes>
         </main>
         <Footer />
