@@ -8,6 +8,7 @@ import alessandro.digiovanni.demo.enums.Condizioni;
 import alessandro.digiovanni.demo.exceptions.UnauthorizedAnnuncioAccessException;
 import alessandro.digiovanni.demo.payloads.AnnuncioCreateDTO;
 import alessandro.digiovanni.demo.payloads.AnnuncioDTO;
+import alessandro.digiovanni.demo.payloads.AnnuncioSellerDTO;
 import alessandro.digiovanni.demo.payloads.AnnuncioUpdateDTO;
 import alessandro.digiovanni.demo.repositories.AnnuncioRepository;
 import alessandro.digiovanni.demo.repositories.UserRepository;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -35,12 +37,7 @@ public class AnnuncioService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<AnnuncioDTO> findAll() {
-        return annuncioRepository.findAll()
-                .stream()
-                .map(this::toDTO)
-                .toList();
-    }
+
 
     public AnnuncioDTO findById(Long id) {
         Annuncio annuncio = annuncioRepository.findById(id)
@@ -164,5 +161,11 @@ public class AnnuncioService {
                 annuncio.getImage(),
                 sellerId
         );
+    }
+    public List<AnnuncioSellerDTO> findAll() {
+        return annuncioRepository.findAll()
+                .stream()
+                .map(AnnuncioSellerDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 }

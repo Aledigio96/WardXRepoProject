@@ -3,6 +3,7 @@ package alessandro.digiovanni.demo.controllers;
 import alessandro.digiovanni.demo.entities.User;
 import alessandro.digiovanni.demo.payloads.AnnuncioCreateDTO;
 import alessandro.digiovanni.demo.payloads.AnnuncioDTO;
+import alessandro.digiovanni.demo.payloads.AnnuncioSellerDTO;
 import alessandro.digiovanni.demo.payloads.AnnuncioUpdateDTO;
 import alessandro.digiovanni.demo.services.AnnuncioService;
 import jakarta.validation.Valid;
@@ -24,7 +25,7 @@ public class AnnuncioController {
     private AnnuncioService annuncioService;
 
     @GetMapping
-    public List<AnnuncioDTO> getAll() {
+    public List<AnnuncioSellerDTO> getAllAnnunci() {
         return annuncioService.findAll();
     }
 

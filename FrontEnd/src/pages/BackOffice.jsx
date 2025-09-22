@@ -13,6 +13,11 @@ const Backoffice = () => {
           Visualizza Utenti
         </Link>
       </Button>
+      <Button>
+        <Link to="/visualizeproducts" style={{ textDecoration: "none", color: "white" }}>
+          Visualizza Annunci
+        </Link>
+      </Button>
     </>
   );
 };

@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { setUserFromStorage } from "./redux/actions/authActions";
 import Backoffice from "./pages/BackOffice";
 import VisualizeUsers from "./components/VisualizeUsers";
+import VisualizeProducts from "./components/VisualizerProducts";
 
 function App() {
   const dispatch = useDispatch();
@@ -45,6 +46,7 @@ function App() {
             <Route path="/carrello" element={<Carrello />} />
             <Route path="/backoffice" element={<Backoffice />} />
             <Route path="/visualizeusers" element={<VisualizeUsers />} />
+            <Route path="/visualizeproducts" element={<VisualizeProducts />} />
           </Routes>
         </main>
         <Footer />
