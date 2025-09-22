@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Spinner, Alert, Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux"; // Usa Redux per stato
-import { logout } from "../redux/actions/authActions"; // Azioni Redux per logout
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/actions/authActions";
 import UserDetails from "../components/UserDetails";
 import UserPosts from "../components/UserPosts";
 import CreatePostForm from "../components/CreatePostForm";
@@ -11,9 +11,8 @@ function Profilo() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Ottieni l'utente e il token da Redux
   const { user, token } = useSelector((state) => state.auth);
-  console.log("Stato Redux:", { user, token }); // Verifica cosa contiene il Redux store
+  console.log("Stato Redux:", { user, token });
 
   const [posts, setPosts] = useState([]);
   const [loadingUser, setLoadingUser] = useState(true);
@@ -23,12 +22,11 @@ function Profilo() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    // Verifica se c'è il token
     console.log("Token iniziale:", token);
 
     if (!token) {
       console.log("Token non trovato, reindirizzamento alla pagina di login");
-      navigate("/"); // Reindirizza alla pagina di login se non c'è il token
+      navigate("/");
       return;
     }
 
@@ -44,28 +42,25 @@ function Profilo() {
         if (!response.ok) throw new Error("Utente non autorizzato");
         const data = await response.json();
         console.log("Profilo utente recuperato:", data);
+        // Potresti aggiornare Redux qui se necessario
       } catch (err) {
         console.error("Errore nel recupero utente:", err);
         setErrorUser(err.message);
-        dispatch(logout()); // Disconnetti l'utente in Redux
-        navigate("/"); // Reindirizza alla pagina di login
+        dispatch(logout());
+        navigate("/");
       } finally {
-        console.log("Fase di caricamento utente terminata");
         setLoadingUser(false);
       }
     };
 
     fetchUser();
-  }, [token, navigate, dispatch]); // Monitorizza il token e dispatch
+  }, [token, navigate, dispatch]);
 
   useEffect(() => {
     if (!user) {
       console.log("Utente non trovato, non posso recuperare i post");
       return;
     }
-
-    console.log("Utente per recupero post:", user);
-    console.log("Token per recupero post:", token);
 
     const fetchPosts = async () => {
       console.log("Inizio il recupero degli annunci per l'utente:", user.username);
@@ -84,18 +79,17 @@ function Profilo() {
         console.error("Errore nel recupero degli annunci:", err);
         setErrorPosts(err.message);
       } finally {
-        console.log("Fase di caricamento degli annunci terminata");
         setLoadingPosts(false);
       }
     };
 
     fetchPosts();
-  }, [user, token]); // Monitorizza i cambiamenti dell'utente e del token
+  }, [user, token]);
 
   const handleLogout = () => {
     console.log("Eseguito il logout");
-    dispatch(logout()); // Esegui il logout tramite Redux
-    navigate("/"); // Reindirizza alla pagina di login
+    dispatch(logout());
+    navigate("/");
   };
 
   const uploadAvatar = async (file, onSuccess) => {
@@ -157,12 +151,14 @@ function Profilo() {
       </Row>
 
       <Row className="mt-4">
-        <Col className="d-flex justify-content-end">
-          <Button
-            variant="primary"
-            onClick={() => setShowModal(true)}
-            disabled={!user} // Disabilita il pulsante se non c'è un utente loggato
-          >
+        <Col className="d-flex justify-content-between">
+          {user?.role === "ADMIN" && (
+            <Button variant="warning" onClick={() => navigate("/backoffice")}>
+              Backoffice
+            </Button>
+          )}
+
+          <Button variant="primary" onClick={() => setShowModal(true)} disabled={!user}>
             Crea un nuovo annuncio
           </Button>
         </Col>

@@ -80,7 +80,7 @@ function TopBar() {
               </Nav.Link>
             ) : (
               <>
-                <Button variant="link" onClick={handleLogout} className="p-0 me-2">
+                <Button variant="link" onClick={handleLogout} className="p-0 me-2 text-decoration-none text-dark">
                   Logout
                 </Button>
               </>
