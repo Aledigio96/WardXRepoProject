@@ -20,6 +20,9 @@ import Backoffice from "./pages/BackOffice";
 import VisualizeUsers from "./components/VisualizeUsers";
 import VisualizeProducts from "./components/VisualizerProducts";
 
+import VisualizePosts from "./components/VisualizePost";
+import VisualizeComments from "./components/VisualizeComment";
+
 function App() {
   const dispatch = useDispatch();
 
@@ -47,6 +50,8 @@ function App() {
             <Route path="/backoffice" element={<Backoffice />} />
             <Route path="/visualizeusers" element={<VisualizeUsers />} />
             <Route path="/visualizeproducts" element={<VisualizeProducts />} />
+            <Route path="/visualizepost" element={<VisualizePosts />} />
+            <Route path="/visualizecomment" element={<VisualizeComments />} />
           </Routes>
         </main>
         <Footer />

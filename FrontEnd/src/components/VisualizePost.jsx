@@ -5,27 +5,23 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useSelector } from "react-redux";
 
-function VisualizeUsers() {
-  const [users, setUsers] = useState([]);
+function VisualizePosts() {
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const { token } = useSelector((state) => state.auth);
 
-  const usersApi = "http://localhost:3001/api/users?page=0&size=5";
+  // Endpoints per i post
+  const postsApi = "http://localhost:3001/api/posts"; // GET tutti i post
+  const deletePostApi = (id) => `http://localhost:3001/api/posts/${id}`; // DELETE singolo post
 
-  const eliminaUtente = async (u) => {
-    const deleteApi = `http://localhost:3001/api/users/${u.id}`;
-    const choice = window.confirm("Confermi l'eliminazione dell'utente?");
+  const eliminaPost = async (post) => {
+    const choice = window.confirm("Confermi l'eliminazione del post?");
     if (!choice) return;
 
-    if (u.role === "ADMIN") {
-      alert("Non puoi eliminare un utente con ruolo ADMIN");
-      return;
-    }
-
     try {
-      const res = await fetch(deleteApi, {
+      const res = await fetch(deletePostApi(post.id), {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -33,9 +29,8 @@ function VisualizeUsers() {
       });
 
       if (res.ok) {
-        alert("Eliminazione avvenuta con successo");
-
-        setUsers((prev) => prev.filter((user) => user.id !== u.id));
+        alert("Post eliminato con successo");
+        setPosts((prev) => prev.filter((p) => p.id !== post.id));
       } else {
         const errorData = await res.json().catch(() => null);
         alert(errorData && errorData.message ? `Errore nell'eliminazione: ${errorData.message}` : "Errore nell'eliminazione");
@@ -55,7 +50,7 @@ function VisualizeUsers() {
     setLoading(true);
     setError("");
 
-    fetch(usersApi, {
+    fetch(postsApi, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -65,16 +60,10 @@ function VisualizeUsers() {
       .then(async (res) => {
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data)) {
-            setUsers(data);
-          } else if (data && Array.isArray(data.content)) {
-            setUsers(data.content);
-          } else {
-            setUsers([]);
-          }
+          setPosts(data);
         } else {
           const errorData = await res.json().catch(() => null);
-          const errorMsg = errorData && errorData.message ? errorData.message : "Errore nel recupero utenti";
+          const errorMsg = errorData && errorData.message ? errorData.message : "Errore nel recupero dei post";
           setError(errorMsg);
         }
       })
@@ -90,8 +79,8 @@ function VisualizeUsers() {
     <>
       <section className="position-fixed start-0 top-0 z-n1 opacity-50 hero-background text-white text-center d-flex flex-column justify-content-center align-items-center"></section>
       <section className="my-5 py-5 container-fluid">
-        <Container className="my-5 py-5 w-50 rounded-3 bg-dark text-white shadow-lg">
-          <h5 className="mb-3">Utenti registrati</h5>
+        <Container className="my-5 py-5 w-75 rounded-3 bg-dark text-white shadow-lg">
+          <h5 className="mb-3">Post</h5>
 
           {loading && <Spinner animation="border" />}
           {error && <Alert variant="danger">{error}</Alert>}
@@ -101,25 +90,21 @@ function VisualizeUsers() {
               <thead>
                 <tr>
                   <th>Id</th>
-                  <th>Nome</th>
-                  <th>Cognome</th>
-                  <th>Email</th>
-                  <th>Username</th>
-                  <th>Ruolo</th>
+                  <th>Contenuto</th>
+                  <th>Creato il</th>
+                  <th>Autore</th>
                   <th>Elimina</th>
                 </tr>
               </thead>
               <tbody>
-                {users.map((u) => (
-                  <tr key={u.id}>
-                    <td>{u.id}</td>
-                    <td>{u.name}</td>
-                    <td>{u.surname}</td>
-                    <td>{u.email}</td>
-                    <td>{u.username}</td>
-                    <td>{u.role}</td>
+                {posts.map((post) => (
+                  <tr key={post.id}>
+                    <td>{post.id}</td>
+                    <td style={{ maxWidth: "400px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{post.content}</td>
+                    <td>{new Date(post.createdAt).toLocaleString()}</td>
+                    <td>{post.autore?.username || "Sconosciuto"}</td>
                     <td>
-                      <Button onClick={() => eliminaUtente(u)} variant="danger" size="sm">
+                      <Button onClick={() => eliminaPost(post)} variant="danger" size="sm">
                         <FontAwesomeIcon icon={faTrash} />
                       </Button>
                     </td>
@@ -134,4 +119,4 @@ function VisualizeUsers() {
   );
 }
 
-export default VisualizeUsers;
+export default VisualizePosts;

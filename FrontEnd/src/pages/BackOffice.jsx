@@ -18,6 +18,16 @@ const Backoffice = () => {
           Visualizza Annunci
         </Link>
       </Button>
+      <Button>
+        <Link to="/visualizepost" style={{ textDecoration: "none", color: "white" }}>
+          Visualizza Post
+        </Link>
+      </Button>
+      <Button>
+        <Link to="/visualizecomment" style={{ textDecoration: "none", color: "white" }}>
+          Visualizza Commenti
+        </Link>
+      </Button>
     </>
   );
 };

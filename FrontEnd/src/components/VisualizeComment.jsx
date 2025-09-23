@@ -5,27 +5,22 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useSelector } from "react-redux";
 
-function VisualizeUsers() {
-  const [users, setUsers] = useState([]);
+function VisualizeComments() {
+  const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const { token } = useSelector((state) => state.auth);
 
-  const usersApi = "http://localhost:3001/api/users?page=0&size=5";
+  const commentsApi = "http://localhost:3001/api/commenti"; // GET tutti i commenti
+  const deleteCommentApi = (id) => `http://localhost:3001/api/commenti/${id}`; // DELETE commento
 
-  const eliminaUtente = async (u) => {
-    const deleteApi = `http://localhost:3001/api/users/${u.id}`;
-    const choice = window.confirm("Confermi l'eliminazione dell'utente?");
+  const eliminaCommento = async (comment) => {
+    const choice = window.confirm("Confermi l'eliminazione del commento?");
     if (!choice) return;
 
-    if (u.role === "ADMIN") {
-      alert("Non puoi eliminare un utente con ruolo ADMIN");
-      return;
-    }
-
     try {
-      const res = await fetch(deleteApi, {
+      const res = await fetch(deleteCommentApi(comment.id), {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -33,9 +28,8 @@ function VisualizeUsers() {
       });
 
       if (res.ok) {
-        alert("Eliminazione avvenuta con successo");
-
-        setUsers((prev) => prev.filter((user) => user.id !== u.id));
+        alert("Commento eliminato con successo");
+        setComments((prev) => prev.filter((c) => c.id !== comment.id));
       } else {
         const errorData = await res.json().catch(() => null);
         alert(errorData && errorData.message ? `Errore nell'eliminazione: ${errorData.message}` : "Errore nell'eliminazione");
@@ -55,7 +49,7 @@ function VisualizeUsers() {
     setLoading(true);
     setError("");
 
-    fetch(usersApi, {
+    fetch(commentsApi, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -65,16 +59,18 @@ function VisualizeUsers() {
       .then(async (res) => {
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data)) {
-            setUsers(data);
-          } else if (data && Array.isArray(data.content)) {
-            setUsers(data.content);
-          } else {
-            setUsers([]);
-          }
+          console.log("Dati ricevuti dai commenti:", data);
+
+          // Log dettagliato per ogni commento
+          data.forEach((comment, i) => {
+            console.log(`Commento #${i} - post:`, comment.post);
+            console.log(`Commento #${i} - user:`, comment.user);
+          });
+
+          setComments(data);
         } else {
           const errorData = await res.json().catch(() => null);
-          const errorMsg = errorData && errorData.message ? errorData.message : "Errore nel recupero utenti";
+          const errorMsg = errorData && errorData.message ? errorData.message : "Errore nel recupero dei commenti";
           setError(errorMsg);
         }
       })
@@ -90,8 +86,8 @@ function VisualizeUsers() {
     <>
       <section className="position-fixed start-0 top-0 z-n1 opacity-50 hero-background text-white text-center d-flex flex-column justify-content-center align-items-center"></section>
       <section className="my-5 py-5 container-fluid">
-        <Container className="my-5 py-5 w-50 rounded-3 bg-dark text-white shadow-lg">
-          <h5 className="mb-3">Utenti registrati</h5>
+        <Container className="my-5 py-5 w-75 rounded-3 bg-dark text-white shadow-lg">
+          <h5 className="mb-3">Commenti</h5>
 
           {loading && <Spinner animation="border" />}
           {error && <Alert variant="danger">{error}</Alert>}
@@ -101,25 +97,39 @@ function VisualizeUsers() {
               <thead>
                 <tr>
                   <th>Id</th>
-                  <th>Nome</th>
-                  <th>Cognome</th>
-                  <th>Email</th>
-                  <th>Username</th>
-                  <th>Ruolo</th>
+                  <th>Testo</th>
+                  <th>Creato il</th>
+                  <th>Post ID</th>
+                  <th>Utente</th>
                   <th>Elimina</th>
                 </tr>
               </thead>
               <tbody>
-                {users.map((u) => (
-                  <tr key={u.id}>
-                    <td>{u.id}</td>
-                    <td>{u.name}</td>
-                    <td>{u.surname}</td>
-                    <td>{u.email}</td>
-                    <td>{u.username}</td>
-                    <td>{u.role}</td>
+                {comments.map((comment) => (
+                  <tr key={comment.id}>
+                    <td>{comment.id}</td>
+                    <td
+                      style={{
+                        maxWidth: "400px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {comment.testo}
+                    </td>
+                    <td>{new Date(comment.createdAt).toLocaleString()}</td>
                     <td>
-                      <Button onClick={() => eliminaUtente(u)} variant="danger" size="sm">
+                      {/* Logato anche qui nel render */}
+                      {console.log("Render comment.post:", comment.post)}
+                      {comment.postId || "Sconosciuto"}
+                    </td>
+                    <td>
+                      {console.log("Render comment.user:", comment.user)}
+                      {comment.username || "Sconosciuto"}
+                    </td>
+                    <td>
+                      <Button onClick={() => eliminaCommento(comment)} variant="danger" size="sm">
                         <FontAwesomeIcon icon={faTrash} />
                       </Button>
                     </td>
@@ -134,4 +144,4 @@ function VisualizeUsers() {
   );
 }
 
-export default VisualizeUsers;
+export default VisualizeComments;
