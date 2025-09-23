@@ -29,8 +29,8 @@ const ScopriOra = () => {
 
   return (
     <div>
-      <Container fluid className="hero-section pb-3 pt-3 text-white" style={{ backgroundColor: "#9b59b6" }}>
-        <h1 className="display-3">WardX</h1>
+      <Container fluid className="hero-section pb-3 pt-3 text-white " style={{ backgroundColor: "#9c59b696" }}>
+        <h1 className="display-3 street-title">WardX</h1>
 
         <p className="pwhite">Wear Your Vibes, Share With the Community</p>
       </Container>

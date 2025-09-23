@@ -14,9 +14,8 @@ function SezioneCentrale() {
 
   const dispatch = useDispatch();
 
-  // Ottieni gli annunci dallo store Redux
   const { annunci, loading, error } = useSelector((state) => state.annunci);
-  const user = useSelector((state) => state.auth.user); // Ottieni l'utente dallo store
+  const user = useSelector((state) => state.auth.user);
 
   const categories = [
     { id: "tshirt", label: "T-SHIRT", icon: <FaMale color="#9b59b6" /> },
@@ -34,7 +33,6 @@ function SezioneCentrale() {
   ];
 
   useEffect(() => {
-    // Carica gli annunci al montaggio del componente
     dispatch(loadAnnunci());
   }, [dispatch]);
 
@@ -98,13 +96,11 @@ function SezioneCentrale() {
           <h2 className="text-center mb-4" style={{ color: "#9b59b6" }}>
             Ultimi Annunci
           </h2>
-          {annunci.map((annuncio) => {
-            // Cerca la proprietà sellerId, sellerID o seller_id
-            const sellerId = annuncio.sellerId ?? annuncio.sellerID ?? annuncio.seller_id ?? null;
 
-            const userIdStr = user ? String(user.id) : null;
-            const sellerIdStr = sellerId ? String(sellerId) : null;
-            const isMyArticle = userIdStr && sellerIdStr && userIdStr === sellerIdStr;
+          {annunci.map((annuncio) => {
+            const sellerId = annuncio.seller?.id ?? annuncio.sellerId ?? annuncio.sellerID ?? annuncio.seller_id ?? annuncio.userId ?? null;
+
+            const isMyArticle = user?.id?.toString() === sellerId?.toString();
 
             return (
               <Col key={annuncio.id} md={4} className="mb-4">

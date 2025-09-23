@@ -16,18 +16,13 @@ const Footer = () => {
               <h5 className="mb-3">Link utili</h5>
               <ul className="list-unstyled d-flex gap-3 m-0 p-0">
                 <li>
-                  <a href="#" className="text-white">
+                  <a href="/" className="text-white ">
                     Home
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-white">
+                  <a href="/scopriora" className="text-white ">
                     Servizi
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white">
-                    Contatti
                   </a>
                 </li>
               </ul>

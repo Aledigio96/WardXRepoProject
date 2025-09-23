@@ -12,7 +12,10 @@ export const setUserFromStorage = (user, token) => ({
   type: "SET_USER_FROM_STORAGE",
   payload: { user, token },
 });
-
+export const setUserProfile = (user) => ({
+  type: "SET_USER_PROFILE",
+  payload: user,
+});
 export const logout = () => (dispatch) => {
   // Resetta lo stato dell'utente a null
   dispatch({ type: "LOGOUT" });

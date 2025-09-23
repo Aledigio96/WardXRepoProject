@@ -61,7 +61,6 @@ function TopBar() {
             </Container>
           </Nav>
           <Nav className="ms-auto d-flex align-items-center">
-            {/* Searchbar PRIMA di login/logout */}
             <div className="mx-2" style={{ maxWidth: "300px", width: "100%" }}>
               <Form className="d-flex my-2 my-lg-0" onSubmit={handleSearchSubmit}>
                 <FormControl

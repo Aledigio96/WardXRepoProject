@@ -35,6 +35,11 @@ const authReducer = (state = initialState, action) => {
         token: action.payload.token,
         isAuthenticated: true,
       };
+    case "SET_USER_PROFILE":
+      return {
+        ...state,
+        user: action.payload,
+      };
 
     default:
       return state;
