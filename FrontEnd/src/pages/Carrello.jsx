@@ -33,7 +33,7 @@ function Carrello() {
       // Resetta il carrello solo quando l'utente è nullo (logout o cambio utente)
       dispatch({ type: "RESET_CART" });
     }
-  }, [user, dispatch]); // Quando cambia l'utente o effettui il login
+  }, [user, dispatch]);
 
   const calcolaTotale = () => contoCart.toFixed(2);
 
@@ -43,7 +43,14 @@ function Carrello() {
         Carrello
       </h2>
 
-      {content.length === 0 ? (
+      {!user ? (
+        <div className="text-center my-5">
+          <p>Per salvare o acquistare articoli nel carrello, accedi o registrati.</p>
+          <Link to="/iscriviti/login">
+            <Button variant="primary">Accedi / Registrati</Button>
+          </Link>
+        </div>
+      ) : content.length === 0 ? (
         <p className="text-center">Il carrello è vuoto.</p>
       ) : (
         <>
