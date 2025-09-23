@@ -3,32 +3,27 @@ import { Link } from "react-router-dom";
 
 const Backoffice = () => {
   return (
-    <>
-      <div>
+    <div className="container py-5">
+      <div className="text-center mb-4">
         <h1>Backoffice Admin</h1>
         <p>Qui puoi gestire gli utenti e i contenuti del sito.</p>
       </div>
-      <Button>
-        <Link to="/visualizeusers" style={{ textDecoration: "none", color: "white" }}>
+
+      <div className="d-flex justify-content-center gap-3 flex-wrap">
+        <Button as={Link} to="/visualizeusers" variant="primary">
           Visualizza Utenti
-        </Link>
-      </Button>
-      <Button>
-        <Link to="/visualizeproducts" style={{ textDecoration: "none", color: "white" }}>
+        </Button>
+        <Button as={Link} to="/visualizeproducts" variant="primary">
           Visualizza Annunci
-        </Link>
-      </Button>
-      <Button>
-        <Link to="/visualizepost" style={{ textDecoration: "none", color: "white" }}>
+        </Button>
+        <Button as={Link} to="/visualizepost" variant="primary">
           Visualizza Post
-        </Link>
-      </Button>
-      <Button>
-        <Link to="/visualizecomment" style={{ textDecoration: "none", color: "white" }}>
+        </Button>
+        <Button as={Link} to="/visualizecomment" variant="primary">
           Visualizza Commenti
-        </Link>
-      </Button>
-    </>
+        </Button>
+      </div>
+    </div>
   );
 };
 

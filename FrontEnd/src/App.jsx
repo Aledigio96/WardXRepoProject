@@ -1,11 +1,12 @@
+import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import TopBar from "./components/TopBar";
 import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import Home from "./pages/Home";
-
-import "./App.css";
 import Social from "./pages/Social";
 import LoginPage from "./pages/LoginPage";
 import Profilo from "./pages/Profilo";
@@ -13,15 +14,15 @@ import ScopriOra from "./pages/ScopriOra";
 import RisultatiRicerca from "./pages/RicercaRisultati";
 import ProfiloPubblico from "./pages/ProfiloPubblico";
 import Carrello from "./pages/Carrello";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { setUserFromStorage } from "./redux/actions/authActions";
 import Backoffice from "./pages/BackOffice";
 import VisualizeUsers from "./components/VisualizeUsers";
 import VisualizeProducts from "./components/VisualizerProducts";
-
 import VisualizePosts from "./components/VisualizePost";
 import VisualizeComments from "./components/VisualizeComment";
+
+import { setUserFromStorage } from "./redux/actions/authActions";
+import "./App.css";
+import Unauthorized from "./components/Unauthorized";
 
 function App() {
   const dispatch = useDispatch();
@@ -29,10 +30,12 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
+
     if (token && user) {
       dispatch(setUserFromStorage(JSON.parse(user), token));
     }
   }, [dispatch]);
+
   return (
     <BrowserRouter>
       <div className="app-wrapper">
@@ -47,11 +50,48 @@ function App() {
             <Route path="/risultati" element={<RisultatiRicerca />} />
             <Route path="/utente/:username" element={<ProfiloPubblico />} />
             <Route path="/carrello" element={<Carrello />} />
-            <Route path="/backoffice" element={<Backoffice />} />
-            <Route path="/visualizeusers" element={<VisualizeUsers />} />
-            <Route path="/visualizeproducts" element={<VisualizeProducts />} />
-            <Route path="/visualizepost" element={<VisualizePosts />} />
-            <Route path="/visualizecomment" element={<VisualizeComments />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
+
+            <Route
+              path="/backoffice"
+              element={
+                <ProtectedRoute>
+                  <Backoffice />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/visualizeusers"
+              element={
+                <ProtectedRoute>
+                  <VisualizeUsers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/visualizeproducts"
+              element={
+                <ProtectedRoute>
+                  <VisualizeProducts />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/visualizepost"
+              element={
+                <ProtectedRoute>
+                  <VisualizePosts />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/visualizecomment"
+              element={
+                <ProtectedRoute>
+                  <VisualizeComments />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </main>
         <Footer />
