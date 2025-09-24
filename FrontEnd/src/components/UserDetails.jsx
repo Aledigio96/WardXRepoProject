@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Card, Image, Spinner, Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { uploadAvatar } from "../redux/actions/authActions";
+import { useNavigate } from "react-router-dom"; // <-- Importa useNavigate
 
 function UserDetails({ handleLogout }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // <-- Hook per navigare
 
   // Stato globale da Redux
   const user = useSelector((state) => state.auth.user);
@@ -24,10 +26,15 @@ function UserDetails({ handleLogout }) {
     await dispatch(uploadAvatar(file, token));
 
     setUploading(false);
-    setPreview(null); // Reset preview per usare immagine aggiornata dal Redux
+    setPreview(null);
   };
 
   const avatarSrc = preview || user?.avatarUrl || "https://placehold.co/150x150";
+
+  // Funzione per andare alla pagina modifica profilo
+  const handleEditProfile = () => {
+    navigate("/modifica-profilo"); // Cambia con il path corretto della tua pagina
+  };
 
   return (
     <Card className="w-100 p-4 mb-4">
@@ -68,6 +75,11 @@ function UserDetails({ handleLogout }) {
         <Col md={3} className="text-center">
           <Button variant="danger" onClick={handleLogout} className="mt-3 w-100">
             Logout
+          </Button>
+
+          {/* Nuovo pulsante Modifica Profilo */}
+          <Button variant="primary" onClick={handleEditProfile} className="mt-3 w-100">
+            Modifica profilo
           </Button>
         </Col>
       </Row>

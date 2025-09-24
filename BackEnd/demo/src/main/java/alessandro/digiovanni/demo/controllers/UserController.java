@@ -2,6 +2,7 @@ package alessandro.digiovanni.demo.controllers;
 
 import alessandro.digiovanni.demo.entities.User;
 import alessandro.digiovanni.demo.payloads.ChangePasswordDTO;
+import alessandro.digiovanni.demo.payloads.UpdateUserChangeDTO;
 import alessandro.digiovanni.demo.payloads.UpdateUserDTO;
 import alessandro.digiovanni.demo.payloads.UserResponseDTO;
 import alessandro.digiovanni.demo.services.UserService;
@@ -52,7 +53,7 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     public UserResponseDTO updateProfile(
             @AuthenticationPrincipal User user,
-            @Valid @RequestBody UpdateUserDTO payload) {
+            @Valid @RequestBody UpdateUserChangeDTO payload) {
 
         User updatedUser = userService.updateUser(user, payload);
 

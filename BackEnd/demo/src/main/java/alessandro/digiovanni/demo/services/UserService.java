@@ -8,6 +8,7 @@ import alessandro.digiovanni.demo.exceptions.BadRequestException;
 import alessandro.digiovanni.demo.exceptions.NotFoundException;
 import alessandro.digiovanni.demo.exceptions.UnauthorizedAnnuncioAccessException;
 import alessandro.digiovanni.demo.payloads.NewUserDTO;
+import alessandro.digiovanni.demo.payloads.UpdateUserChangeDTO;
 import alessandro.digiovanni.demo.payloads.UpdateUserDTO;
 import alessandro.digiovanni.demo.repositories.UserRepository;
 import com.cloudinary.Cloudinary;
@@ -80,7 +81,7 @@ public class UserService {
 
         return userRepository.save(newUser);
     }
-    public User updateUser(User user, UpdateUserDTO payload) {
+    public User updateUser(User user, UpdateUserChangeDTO payload) {
         if (payload.name() != null) user.setName(payload.name());
         if (payload.surname() != null) user.setSurname(payload.surname());
         if (payload.bio() != null) user.setBio(payload.bio());

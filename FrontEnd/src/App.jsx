@@ -23,6 +23,8 @@ import VisualizeComments from "./components/VisualizeComment";
 import { setUserFromStorage } from "./redux/actions/authActions";
 import "./App.css";
 import Unauthorized from "./components/Unauthorized";
+import ModificaAnnuncio from "./pages/ModificaAnnuncio";
+import ModificaProfilo from "./pages/ModificaProfilo";
 
 function App() {
   const dispatch = useDispatch();
@@ -51,6 +53,8 @@ function App() {
             <Route path="/utente/:username" element={<ProfiloPubblico />} />
             <Route path="/carrello" element={<Carrello />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
+            <Route path="/modifica-annuncio/:id" element={<ModificaAnnuncio />} />
+            <Route path="/modifica-profilo" element={<ModificaProfilo />} />
 
             <Route
               path="/backoffice"

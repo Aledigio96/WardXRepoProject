@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Row, Col, Card, Button } from "react-bootstrap";
-import { useSelector } from "react-redux"; // Importa Redux hooks
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom"; // ✅ Importa useNavigate
 
 function UserPosts({ posts, onDeleteSuccess }) {
   const [loadingId, setLoadingId] = useState(null);
-
-  // Ottieni il token dallo stato Redux
   const token = useSelector((state) => state.auth.token);
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated); // Verifica se l'utente è autenticato
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const navigate = useNavigate(); // ✅ Inizializza navigate
 
   const handleDelete = async (id) => {
     if (!token || !isAuthenticated) {
@@ -45,8 +45,9 @@ function UserPosts({ posts, onDeleteSuccess }) {
     }
   };
 
+  // ✅ Funzione per navigare alla pagina di modifica
   const handleEdit = (id) => {
-    alert(`TODO: creare funzionalità di modifica per l'annuncio con ID: ${id}`);
+    navigate(`/modifica-annuncio/${id}`);
   };
 
   if (!posts || posts.length === 0) return <p>Nessun annuncio pubblicato.</p>;
