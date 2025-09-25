@@ -79,14 +79,14 @@ function VisualizePosts() {
     <>
       <section className="position-fixed start-0 top-0 z-n1 opacity-50 hero-background text-white text-center d-flex flex-column justify-content-center align-items-center"></section>
       <section className="my-5 py-5 container-fluid">
-        <Container className="my-5 py-5 w-75 rounded-3 bg-dark text-white shadow-lg">
+        <Container className="my-5 py-5 w-75 rounded-3 bg-primary text-white shadow-lg">
           <h5 className="mb-3">Post</h5>
 
           {loading && <Spinner animation="border" />}
           {error && <Alert variant="danger">{error}</Alert>}
 
           {!loading && !error && (
-            <Table striped hover variant="dark" responsive>
+            <Table striped hover variant="primary" responsive>
               <thead>
                 <tr>
                   <th>Id</th>
