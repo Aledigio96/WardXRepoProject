@@ -5,6 +5,7 @@ import alessandro.digiovanni.demo.entities.User;
 import alessandro.digiovanni.demo.enums.CategoriPrincipale;
 import alessandro.digiovanni.demo.enums.Categoria;
 import alessandro.digiovanni.demo.enums.Condizioni;
+import alessandro.digiovanni.demo.enums.Role;
 import alessandro.digiovanni.demo.exceptions.UnauthorizedAnnuncioAccessException;
 import alessandro.digiovanni.demo.payloads.AnnuncioCreateDTO;
 import alessandro.digiovanni.demo.payloads.AnnuncioDTO;
@@ -111,12 +112,19 @@ public class AnnuncioService {
         Annuncio annuncio = annuncioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Annuncio non trovato con id " + id));
 
-        if (annuncio.getSeller() == null || !annuncio.getSeller().getUsername().equals(username)) {
-            throw new UnauthorizedAnnuncioAccessException("Non sei il proprietario di questo annuncio");
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Utente non trovato: " + username));
+
+        boolean isOwner = annuncio.getSeller() != null && annuncio.getSeller().getUsername().equals(username);
+        boolean isAdmin = user.getRole() == Role.ADMIN;
+
+        if (!isOwner && !isAdmin) {
+            throw new UnauthorizedAnnuncioAccessException("Non sei autorizzato ad eliminare questo annuncio");
         }
 
         annuncioRepository.deleteById(id);
     }
+
 
     public AnnuncioDTO uploadNewImage(Long annuncioId, User user, MultipartFile file) {
         Annuncio annuncio = annuncioRepository.findById(annuncioId)
