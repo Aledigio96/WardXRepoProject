@@ -9,7 +9,7 @@ const cartReducer = (state = statoIniziale, action) => {
       const prodottoEsistente = state.content.find((prodotto) => prodotto.id === action.payload.id);
 
       if (prodottoEsistente) {
-        return state; // Se il prodotto è già nel carrello, non fare nulla
+        return state;
       } else {
         return {
           ...state,

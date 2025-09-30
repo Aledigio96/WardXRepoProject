@@ -166,7 +166,6 @@ function Social() {
     <Container fluid className="my-5">
       <Row className="justify-content-center">
         <Col md={8}>
-          {/* AREA POST */}
           <Card className="mb-4 shadow-sm" style={{ backgroundColor: "rgba(44, 38, 44, 0.1)" }}>
             <Card.Body>
               {userId ? (
@@ -196,7 +195,6 @@ function Social() {
             </Card.Body>
           </Card>
 
-          {/* POST + COMMENTI */}
           {posts.map((post) => (
             <Card key={post.id} className="mb-3" style={{ backgroundColor: "rgba(44, 38, 44, 0.1)" }}>
               <Card.Body>
@@ -231,7 +229,6 @@ function Social() {
                   )}
                 </div>
 
-                {/* COMMENTI */}
                 <div className="mt-3">
                   {(commentsByPost[post.id] || []).map((comment) => (
                     <Card key={comment.id} className="mb-2" style={{ backgroundColor: "rgba(128, 0, 128, 0.05)" }}>
@@ -268,7 +265,6 @@ function Social() {
                   ))}
                 </div>
 
-                {/* AGGIUNGI COMMENTO */}
                 {userId && (
                   <Form
                     onSubmit={(e) => {
@@ -299,7 +295,6 @@ function Social() {
           ))}
         </Col>
 
-        {/* PROFILI CONSIGLIATI */}
         <Col md={4}>
           <Card className="mb-3 shadow-sm">
             <Card.Body>

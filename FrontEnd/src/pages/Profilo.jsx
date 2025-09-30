@@ -38,9 +38,9 @@ function Profilo() {
         if (!response.ok) throw new Error("Utente non autorizzato");
         const data = await response.json();
 
-        // ✅ Salva utente nel Redux
+        // Salva utente nel Redux
         dispatch(setUserProfile(data));
-        localStorage.setItem("user", JSON.stringify(data)); // (opzionale) salva in localStorage
+        localStorage.setItem("user", JSON.stringify(data));
       } catch (err) {
         setErrorUser(err.message);
         dispatch(logout());

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Row, Col, Card, Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom"; // ✅ Importa useNavigate
+import { useNavigate } from "react-router-dom";
 
 function UserPosts({ posts, onDeleteSuccess }) {
   const [loadingId, setLoadingId] = useState(null);
   const token = useSelector((state) => state.auth.token);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const navigate = useNavigate(); // ✅ Inizializza navigate
+  const navigate = useNavigate();
 
   const handleDelete = async (id) => {
     if (!token || !isAuthenticated) {
@@ -45,7 +45,6 @@ function UserPosts({ posts, onDeleteSuccess }) {
     }
   };
 
-  // ✅ Funzione per navigare alla pagina di modifica
   const handleEdit = (id) => {
     navigate(`/modifica-annuncio/${id}`);
   };

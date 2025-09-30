@@ -25,8 +25,7 @@ export const logout = () => (dispatch) => {
   // Rimuove il token dal localStorage o sessionStorage
   localStorage.removeItem("token");
 
-  // Se hai bisogno di fare un redirect (ad esempio alla pagina di login)
-  window.location.href = "/"; // O usa React Router per un redirect
+  window.location.href = "/";
 };
 
 export const uploadAvatar = (file, token) => async (dispatch) => {
@@ -54,13 +53,11 @@ export const uploadAvatar = (file, token) => async (dispatch) => {
       throw new Error("Errore nel caricamento dell'avatar");
     }
 
-    // Ottieni l'URL direttamente come testo
-    const data = await response.text(); // Risposta come stringa (URL)
+    const data = await response.text();
 
-    // Ora usa l'URL per aggiornare lo stato
     dispatch({
       type: "UPLOAD_AVATAR_SUCCESS",
-      payload: data, // data è l'URL dell'avatar
+      payload: data,
     });
   } catch (error) {
     console.error("Errore nel caricamento dell'avatar:", error);

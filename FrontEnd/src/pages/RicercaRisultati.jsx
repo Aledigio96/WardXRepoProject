@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Image, Spinner, Button } from "react-bootstrap";
 import { useLocation, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { fillCart } from "../redux/actions/authActions"; // Assicurati del path corretto
+import { fillCart } from "../redux/actions/authActions";
 
 function RisultatiRicerca() {
   const location = useLocation();

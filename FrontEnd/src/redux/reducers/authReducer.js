@@ -1,6 +1,6 @@
 const initialState = {
   user: null,
-  token: null, // Aggiungi il campo per il token
+  token: null,
   isAuthenticated: false,
 };
 
@@ -10,14 +10,14 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         user: action.payload.user,
-        token: action.payload.token, // Memorizza il token
+        token: action.payload.token,
         isAuthenticated: true,
       };
     case "LOGOUT":
       return {
         ...state,
         user: null,
-        token: null, // Rimuovi anche il token durante il logout
+        token: null,
         isAuthenticated: false,
       };
     case "UPLOAD_AVATAR_SUCCESS":

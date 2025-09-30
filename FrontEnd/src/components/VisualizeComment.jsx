@@ -61,7 +61,6 @@ function VisualizeComments() {
           const data = await res.json();
           console.log("Dati ricevuti dai commenti:", data);
 
-          // Log dettagliato per ogni commento
           data.forEach((comment, i) => {
             console.log(`Commento #${i} - post:`, comment.post);
             console.log(`Commento #${i} - user:`, comment.user);
@@ -120,7 +119,6 @@ function VisualizeComments() {
                     </td>
                     <td>{new Date(comment.createdAt).toLocaleString()}</td>
                     <td>
-                      {/* Logato anche qui nel render */}
                       {console.log("Render comment.post:", comment.post)}
                       {comment.postId || "Sconosciuto"}
                     </td>

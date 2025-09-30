@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Container, Row, Col, Card, Spinner, Alert, Image, Button } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { fillCart } from "../redux/actions/authActions"; // Assicurati che il path sia corretto
+import { fillCart } from "../redux/actions/authActions";
 
 function ProfiloPubblico() {
   const { username } = useParams();
@@ -29,7 +29,6 @@ function ProfiloPubblico() {
         const userData = await resUser.json();
         setUser(userData);
 
-        // Fetch user's announcements
         const resAnnunci = await fetch(`http://localhost:3001/api/annunci/user/${username}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -54,7 +53,6 @@ function ProfiloPubblico() {
     }
   };
 
-  // Loading state
   if (loading) {
     return (
       <Container className="text-center mt-5">
@@ -63,7 +61,6 @@ function ProfiloPubblico() {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <Container className="text-center mt-5">

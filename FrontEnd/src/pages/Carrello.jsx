@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, Container, Row, Col, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-// Action Types
 const rimuoviDalCarrello = (index) => ({
   type: "REMOVE_CART",
   payload: index,
@@ -13,7 +12,6 @@ function Carrello() {
   const { content, contoCart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
-  // Recupera l'utente dal localStorage
   let user = null;
   try {
     const storedUser = localStorage.getItem("user");

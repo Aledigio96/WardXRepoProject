@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Card, Image, Spinner, Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { uploadAvatar } from "../redux/actions/authActions";
-import { useNavigate } from "react-router-dom"; // <-- Importa useNavigate
+import { useNavigate } from "react-router-dom";
 
 function UserDetails({ handleLogout }) {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // <-- Hook per navigare
+  const navigate = useNavigate();
 
   // Stato globale da Redux
   const user = useSelector((state) => state.auth.user);
@@ -33,7 +33,7 @@ function UserDetails({ handleLogout }) {
 
   // Funzione per andare alla pagina modifica profilo
   const handleEditProfile = () => {
-    navigate("/modifica-profilo"); // Cambia con il path corretto della tua pagina
+    navigate("/modifica-profilo");
   };
 
   return (
@@ -77,7 +77,6 @@ function UserDetails({ handleLogout }) {
             Logout
           </Button>
 
-          {/* Nuovo pulsante Modifica Profilo */}
           <Button variant="primary" onClick={handleEditProfile} className="mt-3 w-100">
             Modifica profilo
           </Button>

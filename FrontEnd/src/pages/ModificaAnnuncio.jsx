@@ -27,7 +27,6 @@ function ModificaAnnuncio() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
-  // 🔄 Carica i dati esistenti dell'annuncio
   useEffect(() => {
     if (!isAuthenticated || !token) {
       setError("Utente non autenticato.");
@@ -47,7 +46,6 @@ function ModificaAnnuncio() {
 
         const data = await response.json();
 
-        // ⚠️ Adatta i nomi dei campi se necessario
         setFormData({
           titolo: data.titolo || "",
           descrizione: data.descrizione || "",

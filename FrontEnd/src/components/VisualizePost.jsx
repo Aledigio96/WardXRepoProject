@@ -12,7 +12,6 @@ function VisualizePosts() {
 
   const { token } = useSelector((state) => state.auth);
 
-  // Endpoints per i post
   const postsApi = "http://localhost:3001/api/posts"; // GET tutti i post
   const deletePostApi = (id) => `http://localhost:3001/api/posts/${id}`; // DELETE singolo post
 

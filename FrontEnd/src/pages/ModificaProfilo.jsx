@@ -73,7 +73,6 @@ function ModificaProfilo() {
 
       const updatedUser = await response.json();
 
-      // Usa la action già presente SET_USER_PROFILE
       dispatch({ type: "SET_USER_PROFILE", payload: updatedUser });
 
       setSuccess(true);
